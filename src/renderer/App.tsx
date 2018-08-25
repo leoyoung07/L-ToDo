@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { hashHistory, Route, Router } from 'react-router';
 
 import './App.scss';
 
@@ -10,7 +9,7 @@ appRoot!.className = 'app';
 
 ReactDOM.render(
   <h1>
-    {'Hello, world'}
+    {'L-ToDo'}
   </h1>,
   appRoot
 );

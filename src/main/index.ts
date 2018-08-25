@@ -1,5 +1,4 @@
-import { fork } from 'child_process';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 
@@ -53,9 +52,9 @@ function createMainWindow() {
     });
   });
 
-  window.webContents.on('did-finish-load', () => {});
-
-  ipcMain.on('load-url', async (event: Electron.Event, args: string) => {});
+  window.webContents.on('did-finish-load', () => {
+    // when page load
+  });
 
   return window;
 }

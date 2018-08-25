@@ -36,12 +36,10 @@
     "webpack-sources": "1.0.1"
   },
   "electronWebpack": {
-    "title": "L-Shark",
+    "title": "L-ToDo",
     "main": {
       "webpackConfig": "config/main.webpack.additions.js",
-      "extraEntries": [
-        "@/ProxyWorker.ts"
-      ]
+      "extraEntries": []
     },
     "renderer": {
       "webpackConfig": "config/renderer.webpack.additions.js"
