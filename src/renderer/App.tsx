@@ -1,3 +1,4 @@
+import Button from 'antd/lib/button';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -8,8 +9,8 @@ const appRoot = document.getElementById('app');
 appRoot!.className = 'app';
 
 ReactDOM.render(
-  <h1>
-    {'L-ToDo'}
-  </h1>,
+  <div className="App">
+    <Button type="primary">Button</Button>
+  </div>,
   appRoot
 );
