@@ -30,7 +30,7 @@
     "sass-loader": "^7.0.3",
     "tslint": "^5.10.0",
     "tslint-react": "^3.6.0",
-    "typescript": "^2.9.2",
+    "typescript": "^3.0.0",
     "webpack": "^4.8.1"
   },
   "resolutions": {
