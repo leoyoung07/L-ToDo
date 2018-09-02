@@ -1,4 +1,4 @@
-import { Breadcrumb, Col, Layout, Menu, Row } from 'antd';
+import { Breadcrumb, Card, Col, Divider, Layout, Menu, Row } from 'antd';
 import React from 'react';
 
 const { Content, Sider } = Layout;
@@ -26,25 +26,81 @@ class Main extends React.Component {
               <Breadcrumb.Item>List</Breadcrumb.Item>
               <Breadcrumb.Item>App</Breadcrumb.Item>
             </Breadcrumb>
-            <Content
-              style={{
-                background: '#fff',
-                padding: 24,
-                margin: 0,
-                minHeight: 280
-              }}
-            >
-              <Row gutter={16}>
-                <Col className="gutter-row" span={8}>
-                  <div className="gutter-box">ToDo</div>
-                </Col>
-                <Col className="gutter-row" span={8}>
-                  <div className="gutter-box">Doing</div>
-                </Col>
-                <Col className="gutter-row" span={8}>
-                  <div className="gutter-box">Done</div>
-                </Col>
-              </Row>
+            <Content className="main__content">
+              <div className="main__split-panel">
+                <Row
+                  className="main__split-panel-row"
+                  gutter={16}
+                  type="flex"
+                  justify="space-around"
+                >
+                  <Col className="main__split-panel-col" span={8}>
+                    <div className="main__split-panel-box">
+                      <Divider>To Do</Divider>
+                      <Card
+                        className="main__split-panel-card"
+                        title="Card title"
+                        extra={<a href="#">More</a>}
+                        hoverable={true}
+                      >
+                        <p>Card content</p>
+                        <p>Card content</p>
+                        <p>Card content</p>
+                      </Card>
+                      <Card
+                        className="main__split-panel-card"
+                        title="Card title"
+                        extra={<a href="#">More</a>}
+                        hoverable={true}
+                      >
+                        <p>Card content</p>
+                        <p>Card content</p>
+                        <p>Card content</p>
+                      </Card>
+                      <Card
+                        className="main__split-panel-card"
+                        title="Card title"
+                        extra={<a href="#">More</a>}
+                        hoverable={true}
+                      >
+                        <p>Card content</p>
+                        <p>Card content</p>
+                        <p>Card content</p>
+                      </Card>
+                      <Card
+                        className="main__split-panel-card"
+                        title="Card title"
+                        extra={<a href="#">More</a>}
+                        hoverable={true}
+                      >
+                        <p>Card content</p>
+                        <p>Card content</p>
+                        <p>Card content</p>
+                      </Card>
+                    </div>
+                  </Col>
+                  <Col className="main__split-panel-col" span={8}>
+                    <div className="main__split-panel-box">
+                      <Divider>Doing</Divider>
+                      <Card
+                        className="main__split-panel-card"
+                        title="Card title"
+                        extra={<a href="#">More</a>}
+                        hoverable={true}
+                      >
+                        <p>Card content</p>
+                        <p>Card content</p>
+                        <p>Card content</p>
+                      </Card>
+                    </div>
+                  </Col>
+                  <Col className="main__split-panel-col" span={8}>
+                    <div className="main__split-panel-box">
+                      <Divider>Done</Divider>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
             </Content>
           </Layout>
         </Layout>

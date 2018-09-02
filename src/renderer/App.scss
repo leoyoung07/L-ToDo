@@ -3,7 +3,10 @@
   box-sizing: border-box;
 }
 
-html, body, .app, .ant-layout {
+html,
+body,
+.app,
+.app > .ant-layout {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -11,13 +14,42 @@ html, body, .app, .ant-layout {
   overflow: hidden;
 }
 
-.ant-row {
-  .gutter-example .ant-row > div {
-    background: transparent;
-    border: 0;
-  }
-  .gutter-box {
-    background: #00A0E9;
-    padding: 5px 0;
+.main__content {
+  background: #fff;
+  padding: 24px;
+  margin: 0;
+  position: relative;
+  .main__split-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    .main__split-panel-row {
+      flex: auto;
+      align-items: stretch;
+      .main__split-panel-col {
+        background: #f0f2f5;
+        display: flex;
+        flex-direction: column;
+
+        .main__split-panel-box {
+          background: #fff;
+          flex: auto;
+          padding: 8px;
+          overflow-x: hidden;
+          overflow-y: auto;
+
+          .main__split-panel-card {
+            .ant-card-head {
+              cursor: move;
+            }
+            margin-bottom: 8px;
+          }
+        }
+      }
+    }
   }
 }
