@@ -21,6 +21,11 @@ body,
   position: relative;
 }
 
+.main__header-text {
+  margin-left: 16px;
+  display: inline-block;
+}
+
 .main__split-panel {
   position: absolute;
   top: 0;
@@ -46,6 +51,24 @@ body,
   background: #fff;
   flex: auto;
   padding: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.main__split-panel-title {
+  margin: 0;
+  text-align: center;
+}
+
+.main__split-panel-icon-btn {
+  float: right;
+}
+
+.main__split-panel-divider {
+  margin: 16px 0;
+}
+
+.main__split-panel-content {
   overflow-x: hidden;
   overflow-y: auto;
 }
