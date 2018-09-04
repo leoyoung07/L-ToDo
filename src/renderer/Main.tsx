@@ -1,7 +1,6 @@
 import {
   Breadcrumb,
   Button,
-  Card,
   Col,
   Divider,
   Icon,
@@ -10,6 +9,7 @@ import {
   Row
 } from 'antd';
 import React from 'react';
+import DraggableCard from './DraggableCard';
 
 const { Content, Sider } = Layout;
 
@@ -64,62 +64,14 @@ class Main extends React.Component {
                       </h3>
                       <Divider className="main__split-panel-divider" />
                       <div className="main__split-panel-content">
-                        <Card
-                          className="main__split-panel-card"
-                          title="Card title"
-                          extra={<a href="#">More</a>}
-                          hoverable={true}
-                        >
-                          <p>Card content</p>
-                          <p>Card content</p>
-                          <p>Card content</p>
-                        </Card>
-                        <Card
-                          className="main__split-panel-card"
-                          title="Card title"
-                          extra={<a href="#">More</a>}
-                          hoverable={true}
-                        >
-                          <p>Card content</p>
-                          <p>Card content</p>
-                          <p>Card content</p>
-                        </Card>
-                        <Card
-                          className="main__split-panel-card"
-                          title="Card title"
-                          extra={<a href="#">More</a>}
-                          hoverable={true}
-                        >
-                          <p>Card content</p>
-                          <p>Card content</p>
-                          <p>Card content</p>
-                        </Card>
-                        <Card
-                          className="main__split-panel-card"
-                          title="Card title"
-                          extra={<a href="#">More</a>}
-                          hoverable={true}
-                        >
-                          <p>Card content</p>
-                          <p>Card content</p>
-                          <p>Card content</p>
-                        </Card>
+                        <DraggableCard />
                       </div>
                     </div>
                   </Col>
                   <Col className="main__split-panel-col" span={8}>
                     <div className="main__split-panel-box">
                       <Divider>Doing</Divider>
-                      <Card
-                        className="main__split-panel-card"
-                        title="Card title"
-                        extra={<a href="#">More</a>}
-                        hoverable={true}
-                      >
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                      </Card>
+                      <DraggableCard />
                     </div>
                   </Col>
                   <Col className="main__split-panel-col" span={8}>
