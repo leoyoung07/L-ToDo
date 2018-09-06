@@ -1,4 +1,9 @@
 import { app, BrowserWindow } from 'electron';
+import installExtension, {
+  ExtensionReference,
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS
+} from 'electron-devtools-installer';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 
@@ -19,6 +24,8 @@ function createMainWindow() {
   );
 
   if (isDevelopment) {
+    installDevExtension(REACT_DEVELOPER_TOOLS);
+    installDevExtension(REDUX_DEVTOOLS);
     window.webContents.openDevTools();
   }
 
@@ -78,3 +85,14 @@ app.on('activate', () => {
 app.on('ready', () => {
   mainWindow = createMainWindow();
 });
+
+async function installDevExtension(extension: ExtensionReference) {
+  try {
+    let name = await installExtension(extension);
+    // tslint:disable-next-line:no-console
+    console.log(`Added Extension:  ${name}`);
+  } catch (error) {
+    // tslint:disable-next-line:no-console
+    console.log('An error occurred: ', error);
+  }
+}

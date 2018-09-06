@@ -21,11 +21,13 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0-beta.51",
+    "@types/electron-devtools-installer": "^2.2.0",
     "@types/react": "^16.4.1",
     "@types/react-dom": "^16.0.6",
     "@types/react-router": "^3.0.0",
     "electron": "2.0.0",
     "electron-builder": "^20.11.1",
+    "electron-devtools-installer": "^2.2.4",
     "electron-webpack": "^2.0.1",
     "electron-webpack-ts": "^2.0.2",
     "node-sass": "^4.9.1",

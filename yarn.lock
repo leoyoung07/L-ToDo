@@ -612,6 +612,10 @@
   version "0.9.46"
   resolved "http://registry.npm.taobao.org/@types/core-js/download/@types/core-js-0.9.46.tgz#ea701ee34cbb6dfe6d100f1530319547c93c8d79"
 
+"@types/electron-devtools-installer@^2.2.0":
+  version "2.2.0"
+  resolved "http://registry.npm.taobao.org/@types/electron-devtools-installer/download/@types/electron-devtools-installer-2.2.0.tgz#32ee4ebbe99b3daf9847a6d2097dc00b5de94f10"
+
 "@types/history@^3":
   version "3.2.2"
   resolved "http://registry.npm.taobao.org/@types/history/download/@types/history-3.2.2.tgz#b6affa240cb10b5f841c6443d8a24d7f3fc8bb0c"

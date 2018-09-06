@@ -64,14 +64,14 @@ class Main extends React.Component {
                       </h3>
                       <Divider className="main__split-panel-divider" />
                       <div className="main__split-panel-content">
-                        <DraggableCard />
+                        <DraggableCard name="card"/>
                       </div>
                     </div>
                   </Col>
                   <Col className="main__split-panel-col" span={8}>
                     <div className="main__split-panel-box">
                       <Divider>Doing</Divider>
-                      <DraggableCard />
+                      <DraggableCard name="card"/>
                     </div>
                   </Col>
                   <Col className="main__split-panel-col" span={8}>
