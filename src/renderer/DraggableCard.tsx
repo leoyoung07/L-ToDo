@@ -40,18 +40,23 @@ const boxSource = {
 )
 class DraggableCard extends React.Component<IBoxProps> {
   render() {
-    return (
-      <Card
-        className="draggable-card"
-        title="Card title"
-        extra={<a href="#">More</a>}
-        hoverable={true}
-      >
-        <p>Card content</p>
-        <p>Card content</p>
-        <p>Card content</p>
-      </Card>
-    );
+    const { isDragging, connectDragSource } = this.props;
+    return connectDragSource
+      ? connectDragSource(
+          <div style={{ opacity: isDragging ? 0.5 : 1 }}>
+            <Card
+              className="draggable-card"
+              title="Card title"
+              extra={<a href="#">More</a>}
+              hoverable={true}
+            >
+              <p>Card content</p>
+              <p>Card content</p>
+              <p>Card content</p>
+            </Card>
+          </div>
+        )
+      : null;
   }
 }
 
