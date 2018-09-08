@@ -9,14 +9,18 @@ import {
   Row
 } from 'antd';
 import React from 'react';
-import { DragDropContextProvider } from 'react-dnd';
+import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import DraggableCard from './DraggableCard';
+import DroppableBox from './DroppableBox';
+import Task from './Task';
 
 const { Content, Sider } = Layout;
 
+@DragDropContext(HTML5Backend)
 class Main extends React.Component {
   render() {
+    const task = new Task('Test...', 'Something to do...');
     return (
       <Layout>
         <Layout>
@@ -44,48 +48,51 @@ class Main extends React.Component {
                 </Breadcrumb>
               </div>
             </div>
-            <DragDropContextProvider backend={HTML5Backend}>
-              <Content className="main__content">
-                <div className="main__split-panel">
-                  <Row
-                    className="main__split-panel-row"
-                    gutter={16}
-                    type="flex"
-                    justify="space-around"
-                  >
-                    <Col className="main__split-panel-col" span={8}>
-                      <div className="main__split-panel-box">
-                        <h3 className="main__split-panel-title">
-                          <span>To Do</span>
-                          <Button
-                            shape="circle"
-                            icon="plus"
-                            type="primary"
-                            size="small"
-                            className="main__split-panel-icon-btn"
-                          />
-                        </h3>
-                        <Divider className="main__split-panel-divider" />
-                        <div className="main__split-panel-content">
-                          <DraggableCard name="card" />
-                        </div>
+            <Content className="main__content">
+              <div className="main__split-panel">
+                <Row
+                  className="main__split-panel-row"
+                  gutter={16}
+                  type="flex"
+                  justify="space-around"
+                >
+                  <Col className="main__split-panel-col" span={8}>
+                    <div className="main__split-panel-box">
+                      <h3 className="main__split-panel-title">
+                        <span>To Do</span>
+                        <Button
+                          shape="circle"
+                          icon="plus"
+                          type="primary"
+                          size="small"
+                          className="main__split-panel-icon-btn"
+                        />
+                      </h3>
+                      <Divider className="main__split-panel-divider" />
+                      <div className="main__split-panel-content">
+                        <DraggableCard task={task} />
                       </div>
-                    </Col>
-                    <Col className="main__split-panel-col" span={8}>
-                      <div className="main__split-panel-box">
-                        <Divider>Doing</Divider>
-                        <DraggableCard name="card" />
-                      </div>
-                    </Col>
-                    <Col className="main__split-panel-col" span={8}>
-                      <div className="main__split-panel-box">
-                        <Divider>Done</Divider>
-                      </div>
-                    </Col>
-                  </Row>
-                </div>
-              </Content>
-            </DragDropContextProvider>
+                    </div>
+                  </Col>
+                  <Col className="main__split-panel-col" span={8}>
+                    <div className="main__split-panel-box">
+                      <h3 className="main__split-panel-title">
+                        <span>Doing</span>
+                      </h3>
+                      <Divider className="main__split-panel-divider" />
+                      <DroppableBox />
+                    </div>
+                  </Col>
+                  <Col className="main__split-panel-col" span={8}>
+                    <div className="main__split-panel-box">
+                      <h3 className="main__split-panel-title">
+                        <span>Done</span>
+                      </h3>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </Content>
           </Layout>
         </Layout>
       </Layout>

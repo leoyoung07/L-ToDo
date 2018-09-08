@@ -6,9 +6,10 @@ import {
   DragSourceConnector,
   DragSourceMonitor
 } from 'react-dnd';
+import Task from './Task';
 
 export interface IBoxProps {
-  name: string;
+  task: Task;
   isDragging?: boolean;
   connectDragSource?: ConnectDragSource;
 }
@@ -16,7 +17,7 @@ export interface IBoxProps {
 const boxSource = {
   beginDrag(props: IBoxProps) {
     return {
-      name: props.name
+      task: props.task
     };
   },
 
@@ -25,7 +26,7 @@ const boxSource = {
     const dropResult = monitor.getDropResult();
 
     if (dropResult) {
-      alert(`You dropped ${item.name} into ${dropResult.name}!`);
+      alert(`You dropped ${item.task.Id} into ${dropResult.name}!`);
     }
   }
 };
@@ -46,13 +47,11 @@ class DraggableCard extends React.Component<IBoxProps> {
           <div style={{ opacity: isDragging ? 0.5 : 1 }}>
             <Card
               className="draggable-card"
-              title="Card title"
+              title={this.props.task.Title}
               extra={<a href="#">More</a>}
               hoverable={true}
             >
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
+              <p>{this.props.task.Content}</p>
             </Card>
           </div>
         )
