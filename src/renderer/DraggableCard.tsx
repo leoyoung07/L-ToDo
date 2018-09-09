@@ -6,27 +6,34 @@ import {
   DragSourceConnector,
   DragSourceMonitor
 } from 'react-dnd';
-import Task from './Task';
+import Task, { TaskState } from './Task';
 
-export interface IBoxProps {
+interface IDraggableCardProps {
   task: Task;
+
+  handleTaskStateChange: (taskId: string, newState: TaskState) => void;
   isDragging?: boolean;
   connectDragSource?: ConnectDragSource;
 }
 
+interface IDraggableCardState {}
+
 const boxSource = {
-  beginDrag(props: IBoxProps) {
+  beginDrag(props: IDraggableCardProps) {
     return {
       task: props.task
     };
   },
 
-  endDrag(props: IBoxProps, monitor: DragSourceMonitor) {
-    const item = monitor.getItem();
-    const dropResult = monitor.getDropResult();
-
+  endDrag(
+    props: IDraggableCardProps,
+    monitor: DragSourceMonitor,
+    component: DraggableCard
+  ) {
+    const item = monitor.getItem() as { task: Task };
+    const dropResult = monitor.getDropResult() as { state: TaskState };
     if (dropResult) {
-      alert(`You dropped ${item.task.Id} into ${dropResult.name}!`);
+      component.props.handleTaskStateChange(item.task.Id, dropResult.state);
     }
   }
 };
@@ -39,7 +46,10 @@ const boxSource = {
     isDragging: monitor.isDragging()
   })
 )
-class DraggableCard extends React.Component<IBoxProps> {
+class DraggableCard extends React.Component<
+  IDraggableCardProps,
+  IDraggableCardState
+> {
   render() {
     const { isDragging, connectDragSource } = this.props;
     return connectDragSource

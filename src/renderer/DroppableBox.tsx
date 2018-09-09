@@ -5,14 +5,20 @@ import {
   DropTargetConnector,
   DropTargetMonitor
 } from 'react-dnd';
+import DraggableCard from './DraggableCard';
+import Task, { TaskState } from './Task';
 
 const boxTarget = {
-  drop() {
-    return { name: 'DroppableBox' };
+  drop(props: IDroppableBox) {
+    return { state: props.state };
   }
 };
 
 export interface IDroppableBox {
+  tasks: Task[];
+  state: TaskState;
+
+  handleTaskStateChange: (taskId: string, newState: TaskState) => void;
   canDrop?: boolean;
   isOver?: boolean;
   connectDropTarget?: ConnectDropTarget;
@@ -38,7 +44,17 @@ class DroppableBox extends React.Component<IDroppableBox> {
     return connectDropTarget
       ? connectDropTarget(
           <div className={classNames.join(' ')}>
-            {this.props.children}
+              {this.props.tasks
+                .filter(t => t.State === this.props.state)
+                .map(task => {
+                  return (
+                    <DraggableCard
+                      key={task.Id}
+                      task={task}
+                      handleTaskStateChange={this.props.handleTaskStateChange}
+                    />
+                  );
+                })}
           </div>
         )
       : null;
