@@ -5,16 +5,16 @@ import {
   DropTargetConnector,
   DropTargetMonitor
 } from 'react-dnd';
-import DraggableCard from './DraggableCard';
 import Task, { TaskState } from './Task';
+import TaskCard from './TaskCard';
 
 const boxTarget = {
-  drop(props: IDroppableBox) {
+  drop(props: ITaskListProps) {
     return { state: props.state };
   }
 };
 
-export interface IDroppableBox {
+export interface ITaskListProps {
   tasks: Task[];
   state: TaskState;
 
@@ -33,7 +33,7 @@ export interface IDroppableBox {
     canDrop: monitor.canDrop()
   })
 )
-class DroppableBox extends React.Component<IDroppableBox> {
+class TaskList extends React.Component<ITaskListProps> {
   render() {
     const { canDrop, isOver, connectDropTarget } = this.props;
     const isActive = canDrop && isOver;
@@ -48,7 +48,7 @@ class DroppableBox extends React.Component<IDroppableBox> {
                 .filter(t => t.State === this.props.state)
                 .map(task => {
                   return (
-                    <DraggableCard
+                    <TaskCard
                       key={task.Id}
                       task={task}
                       handleTaskStateChange={this.props.handleTaskStateChange}
@@ -61,4 +61,4 @@ class DroppableBox extends React.Component<IDroppableBox> {
   }
 }
 
-export default DroppableBox;
+export default TaskList;

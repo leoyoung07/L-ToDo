@@ -8,7 +8,7 @@ import {
 } from 'react-dnd';
 import Task, { TaskState } from './Task';
 
-interface IDraggableCardProps {
+interface ITaskCardProps {
   task: Task;
 
   handleTaskStateChange: (taskId: string, newState: TaskState) => void;
@@ -16,19 +16,19 @@ interface IDraggableCardProps {
   connectDragSource?: ConnectDragSource;
 }
 
-interface IDraggableCardState {}
+interface ITaskCardState {}
 
 const boxSource = {
-  beginDrag(props: IDraggableCardProps) {
+  beginDrag(props: ITaskCardProps) {
     return {
       task: props.task
     };
   },
 
   endDrag(
-    props: IDraggableCardProps,
+    props: ITaskCardProps,
     monitor: DragSourceMonitor,
-    component: DraggableCard
+    component: TaskCard
   ) {
     const item = monitor.getItem() as { task: Task };
     const dropResult = monitor.getDropResult() as { state: TaskState };
@@ -46,9 +46,9 @@ const boxSource = {
     isDragging: monitor.isDragging()
   })
 )
-class DraggableCard extends React.Component<
-  IDraggableCardProps,
-  IDraggableCardState
+class TaskCard extends React.Component<
+  ITaskCardProps,
+  ITaskCardState
 > {
   render() {
     const { isDragging, connectDragSource } = this.props;
@@ -69,4 +69,4 @@ class DraggableCard extends React.Component<
   }
 }
 
-export default DraggableCard;
+export default TaskCard;

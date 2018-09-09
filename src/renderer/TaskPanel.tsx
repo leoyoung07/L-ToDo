@@ -1,7 +1,8 @@
 import { Button, Col, Divider, Row } from 'antd';
 import React from 'react';
-import DroppableBox from './DroppableBox';
 import Task, { TaskState } from './Task';
+import TaskList from './TaskList';
+import { DeepClone } from './Util';
 
 interface ITaskPanelProps {}
 interface ITaskPanelState {
@@ -38,7 +39,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                 />
               </h3>
               <Divider className="main__split-panel-divider" />
-              <DroppableBox
+              <TaskList
                 state={TaskState.TODO}
                 tasks={this.state.tasks}
                 handleTaskStateChange={this.handleTaskStateChange}
@@ -51,7 +52,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                 <span>Doing</span>
               </h3>
               <Divider className="main__split-panel-divider" />
-              <DroppableBox
+              <TaskList
                 state={TaskState.DOING}
                 tasks={this.state.tasks}
                 handleTaskStateChange={this.handleTaskStateChange}
@@ -64,7 +65,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                 <span>Done</span>
               </h3>
               <Divider className="main__split-panel-divider" />
-              <DroppableBox
+              <TaskList
                 state={TaskState.DONE}
                 tasks={this.state.tasks}
                 handleTaskStateChange={this.handleTaskStateChange}
@@ -77,7 +78,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
   }
 
   private handleTaskStateChange(id: string, state: TaskState) {
-    const newTasks = JSON.parse(JSON.stringify(this.state.tasks)) as Task[];
+    const newTasks = DeepClone(this.state.tasks);
     const currentTask = newTasks.find(t => t.Id === id);
     if (currentTask) {
       currentTask.State = state;
