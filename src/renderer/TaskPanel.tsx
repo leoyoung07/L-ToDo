@@ -1,4 +1,14 @@
-import { Button, Col, Divider, Row } from 'antd';
+import {
+  Button,
+  Col,
+  DatePicker,
+  Divider,
+  Drawer,
+  Form,
+  Input,
+  Row,
+  Select
+} from 'antd';
 import React from 'react';
 import Task, { TaskState } from './Task';
 import TaskList from './TaskList';
@@ -7,15 +17,19 @@ import { DeepClone } from './Util';
 interface ITaskPanelProps {}
 interface ITaskPanelState {
   tasks: Task[];
+  drawerVisible: boolean;
 }
 
 class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
   constructor(props: ITaskPanelProps) {
     super(props);
     this.state = {
-      tasks: [new Task('Test...', 'Something to do...')]
+      tasks: [new Task('Test...', 'Something to do...')],
+      drawerVisible: false
     };
     this.handleTaskStateChange = this.handleTaskStateChange.bind(this);
+    this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+    this.handleDrawerClose = this.handleDrawerClose.bind(this);
   }
   render() {
     return (
@@ -36,6 +50,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                   type="primary"
                   size="small"
                   className="main__split-panel-icon-btn"
+                  onClick={this.handleDrawerOpen}
                 />
               </h3>
               <Divider className="main__split-panel-divider" />
@@ -73,6 +88,68 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
             </div>
           </Col>
         </Row>
+        <Drawer
+          title="Add New Task"
+          width={500}
+          placement="right"
+          onClose={this.handleDrawerClose}
+          maskClosable={false}
+          visible={this.state.drawerVisible}
+          style={{
+            overflow: 'auto'
+          }}
+        >
+          <Form layout="vertical" hideRequiredMark={true}>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item label="Title">
+                  <Input placeholder="please enter title" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item label="DateTime">
+                  <DatePicker style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item label="Description">
+                  <Input.TextArea
+                    rows={4}
+                    placeholder="please enter description"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              borderTop: '1px solid #e8e8e8',
+              padding: '10px 16px',
+              textAlign: 'right'
+            }}
+          >
+            <Button
+              style={{
+                marginRight: 8
+              }}
+              onClick={this.handleDrawerClose}
+              type="primary"
+            >
+              Add
+            </Button>
+            <Button onClick={this.handleDrawerClose}>
+              Cancel
+            </Button>
+          </div>
+        </Drawer>
       </div>
     );
   }
@@ -86,6 +163,17 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
         tasks: newTasks
       });
     }
+  }
+
+  private handleDrawerOpen() {
+    this.setState({
+      drawerVisible: true
+    });
+  }
+  private handleDrawerClose() {
+    this.setState({
+      drawerVisible: false
+    });
   }
 }
 
