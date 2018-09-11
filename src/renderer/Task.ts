@@ -5,7 +5,7 @@ export default class Task {
 
   public State: TaskState;
 
-  constructor(public Title: string, public Content?: string) {
+  constructor(public Title: string, public DueDate: string, public Content?: string) {
     const now = (new Date()).getTime();
     this.CreateTime = now;
     this.Id = now.toString();

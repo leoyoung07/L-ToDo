@@ -15,7 +15,7 @@ import { DeepClone } from './Util';
 
 interface ITaskPanelProps {}
 interface ITaskPanelState {
-  newTask: {title: string, description: string, dueDate: number};
+  newTask: {title: string, description: string, dueDate: Date};
   tasks: Task[];
   drawerVisible: boolean;
 }
@@ -27,9 +27,9 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
       newTask: {
         title: '',
         description: '',
-        dueDate: 0
+        dueDate: new Date()
       },
-      tasks: [new Task('Test...', 'Something to do...')],
+      tasks: [new Task('Test...', '20180911', 'Something to do...')],
       drawerVisible: false
     };
     this.handleTaskStateChange = this.handleTaskStateChange.bind(this);
@@ -109,7 +109,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
             <Row gutter={16}>
               <Col span={24}>
                 <Form.Item label="Title">
-                  <Input placeholder="please enter title" />
+                  <Input value={this.state.newTask.title} placeholder="please enter title" />
                 </Form.Item>
               </Col>
             </Row>
