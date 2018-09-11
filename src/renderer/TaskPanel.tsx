@@ -15,6 +15,7 @@ import { DeepClone } from './Util';
 
 interface ITaskPanelProps {}
 interface ITaskPanelState {
+  newTask: {title: string, description: string, dueDate: number};
   tasks: Task[];
   drawerVisible: boolean;
 }
@@ -23,12 +24,18 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
   constructor(props: ITaskPanelProps) {
     super(props);
     this.state = {
+      newTask: {
+        title: '',
+        description: '',
+        dueDate: 0
+      },
       tasks: [new Task('Test...', 'Something to do...')],
       drawerVisible: false
     };
     this.handleTaskStateChange = this.handleTaskStateChange.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
+    this.handleCreateTaskBtnClick = this.handleCreateTaskBtnClick.bind(this);
   }
   render() {
     return (
@@ -136,7 +143,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
             }}
           >
             <Button
-              onClick={this.handleDrawerClose}
+              onClick={this.handleCreateTaskBtnClick}
               type="primary"
             >
               Add
@@ -167,6 +174,10 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
     this.setState({
       drawerVisible: false
     });
+  }
+
+  private handleCreateTaskBtnClick() {
+    this.handleDrawerClose();
   }
 }
 
