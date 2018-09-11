@@ -3489,9 +3489,9 @@ electron-webpack@^2.0.1:
     webpack-merge "^4.1.2"
     yargs "^11.1.0"
 
-electron@2.0.0:
-  version "2.0.0"
-  resolved "http://registry.npm.taobao.org/electron/download/electron-2.0.0.tgz#e95dc7f3a089a52b8c2a52c7c9e1024db0c8d46e"
+electron@2.0.8:
+  version "2.0.8"
+  resolved "http://registry.npm.taobao.org/electron/download/electron-2.0.8.tgz#6ec7113b356e09cc9899797e0d41ebff8163e962"
   dependencies:
     "@types/node" "^8.0.24"
     electron-download "^3.0.1"

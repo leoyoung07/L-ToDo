@@ -6,8 +6,7 @@ import {
   Drawer,
   Form,
   Input,
-  Row,
-  Select
+  Row
 } from 'antd';
 import React from 'react';
 import Task, { TaskState } from './Task';
@@ -137,16 +136,10 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
             }}
           >
             <Button
-              style={{
-                marginRight: 8
-              }}
               onClick={this.handleDrawerClose}
               type="primary"
             >
               Add
-            </Button>
-            <Button onClick={this.handleDrawerClose}>
-              Cancel
             </Button>
           </div>
         </Drawer>
