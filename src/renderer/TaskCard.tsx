@@ -46,18 +46,21 @@ const boxSource = {
     isDragging: monitor.isDragging()
   })
 )
-class TaskCard extends React.Component<
-  ITaskCardProps,
-  ITaskCardState
-> {
+class TaskCard extends React.Component<ITaskCardProps, ITaskCardState> {
   render() {
     const { isDragging, connectDragSource } = this.props;
+    const cardTitle = (
+      <div>
+        {this.props.task.Title}
+        <span className="task-card__due-date">{this.props.task.DueDate}</span>
+      </div>
+    );
     return connectDragSource
       ? connectDragSource(
           <div style={{ opacity: isDragging ? 0.5 : 1 }}>
             <Card
-              className="draggable-card"
-              title={this.props.task.Title}
+              className="task-card"
+              title={cardTitle}
               extra={<a href="#">More</a>}
               hoverable={true}
             >

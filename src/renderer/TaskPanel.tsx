@@ -30,13 +30,16 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
         description: '',
         dueDate: moment()
       },
-      tasks: [new Task('Test...', '20180911', 'Something to do...')],
+      tasks: [],
       drawerVisible: false
     };
     this.handleTaskStateChange = this.handleTaskStateChange.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleCreateTaskBtnClick = this.handleCreateTaskBtnClick.bind(this);
+    this.handleTitleChange = this.handleTitleChange.bind(this);
+    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+    this.handleDueDateChange = this.handleDueDateChange.bind(this);
   }
   render() {
     return (
@@ -112,7 +115,8 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                 <Form.Item label="Title">
                   <Input
                     value={this.state.newTask.title}
-                    placeholder="please enter title"
+                    placeholder="Something to do..."
+                    onChange={this.handleTitleChange}
                   />
                 </Form.Item>
               </Col>
@@ -123,6 +127,8 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                   <DatePicker
                     value={this.state.newTask.dueDate}
                     style={{ width: '100%' }}
+                    placeholder="Task deadline"
+                    onChange={this.handleDueDateChange}
                   />
                 </Form.Item>
               </Col>
@@ -132,8 +138,9 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                 <Form.Item label="Description">
                   <Input.TextArea
                     rows={4}
-                    placeholder="please enter description"
+                    placeholder="describe the task..."
                     value={this.state.newTask.description}
+                    onChange={this.handleDescriptionChange}
                   />
                 </Form.Item>
               </Col>
@@ -185,13 +192,37 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
     const taskVal = this.state.newTask;
     const task = new Task(
       taskVal.title,
-      taskVal.dueDate.format('YYYYMMDD'),
+      taskVal.dueDate.format('YYYY-MM-DD'),
       taskVal.description
     );
     this.setState({
       tasks: this.state.tasks.concat([task])
     });
     this.handleDrawerClose();
+  }
+
+  private handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const newTask = {...this.state.newTask};
+    newTask.title = e.target.value;
+    this.setState({
+      newTask
+    });
+  }
+
+  private handleDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const newTask = {...this.state.newTask};
+    newTask.description = e.target.value;
+    this.setState({
+      newTask
+    });
+  }
+
+  private handleDueDateChange(date: Moment, dateString: string) {
+    const newTask = {...this.state.newTask};
+    newTask.dueDate = date;
+    this.setState({
+      newTask
+    });
   }
 }
 
