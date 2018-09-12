@@ -8,6 +8,7 @@ import {
   Input,
   Row
 } from 'antd';
+import moment, { Moment } from 'moment';
 import React from 'react';
 import Task, { TaskState } from './Task';
 import TaskList from './TaskList';
@@ -15,7 +16,7 @@ import { DeepClone } from './Util';
 
 interface ITaskPanelProps {}
 interface ITaskPanelState {
-  newTask: {title: string, description: string, dueDate: Date};
+  newTask: { title: string; description: string; dueDate: Moment };
   tasks: Task[];
   drawerVisible: boolean;
 }
@@ -27,7 +28,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
       newTask: {
         title: '',
         description: '',
-        dueDate: new Date()
+        dueDate: moment()
       },
       tasks: [new Task('Test...', '20180911', 'Something to do...')],
       drawerVisible: false
@@ -109,14 +110,20 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
             <Row gutter={16}>
               <Col span={24}>
                 <Form.Item label="Title">
-                  <Input value={this.state.newTask.title} placeholder="please enter title" />
+                  <Input
+                    value={this.state.newTask.title}
+                    placeholder="please enter title"
+                  />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={16}>
               <Col span={24}>
                 <Form.Item label="DateTime">
-                  <DatePicker style={{ width: '100%' }} />
+                  <DatePicker
+                    value={this.state.newTask.dueDate}
+                    style={{ width: '100%' }}
+                  />
                 </Form.Item>
               </Col>
             </Row>
@@ -126,6 +133,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                   <Input.TextArea
                     rows={4}
                     placeholder="please enter description"
+                    value={this.state.newTask.description}
                   />
                 </Form.Item>
               </Col>
@@ -142,10 +150,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
               textAlign: 'right'
             }}
           >
-            <Button
-              onClick={this.handleCreateTaskBtnClick}
-              type="primary"
-            >
+            <Button onClick={this.handleCreateTaskBtnClick} type="primary">
               Add
             </Button>
           </div>
@@ -177,6 +182,15 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
   }
 
   private handleCreateTaskBtnClick() {
+    const taskVal = this.state.newTask;
+    const task = new Task(
+      taskVal.title,
+      taskVal.dueDate.format('YYYYMMDD'),
+      taskVal.description
+    );
+    this.setState({
+      tasks: this.state.tasks.concat([task])
+    });
     this.handleDrawerClose();
   }
 }
