@@ -1,22 +1,12 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Divider,
-  Drawer,
-  Form,
-  Input,
-  Row
-} from 'antd';
-import moment, { Moment } from 'moment';
+import { Button, Col, Divider, Row } from 'antd';
 import React from 'react';
+import NewTaskDrawer, { INewTask } from './NewTaskDrawer';
 import Task, { TaskState } from './Task';
 import TaskList from './TaskList';
 import { DeepClone } from './Util';
 
 interface ITaskPanelProps {}
 interface ITaskPanelState {
-  newTask: { title: string; description: string; dueDate: Moment };
   tasks: Task[];
   drawerVisible: boolean;
 }
@@ -25,11 +15,6 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
   constructor(props: ITaskPanelProps) {
     super(props);
     this.state = {
-      newTask: {
-        title: '',
-        description: '',
-        dueDate: moment()
-      },
       tasks: [],
       drawerVisible: false
     };
@@ -37,9 +22,6 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleCreateTaskBtnClick = this.handleCreateTaskBtnClick.bind(this);
-    this.handleTitleChange = this.handleTitleChange.bind(this);
-    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-    this.handleDueDateChange = this.handleDueDateChange.bind(this);
   }
   render() {
     return (
@@ -98,70 +80,11 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
             </div>
           </Col>
         </Row>
-        <Drawer
-          title="Add New Task"
-          width={500}
-          placement="right"
-          onClose={this.handleDrawerClose}
-          maskClosable={false}
-          visible={this.state.drawerVisible}
-          style={{
-            overflow: 'auto'
-          }}
-        >
-          <Form layout="vertical" hideRequiredMark={true}>
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item label="Title">
-                  <Input
-                    value={this.state.newTask.title}
-                    placeholder="Something to do..."
-                    onChange={this.handleTitleChange}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item label="DateTime">
-                  <DatePicker
-                    value={this.state.newTask.dueDate}
-                    style={{ width: '100%' }}
-                    placeholder="Task deadline"
-                    onChange={this.handleDueDateChange}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item label="Description">
-                  <Input.TextArea
-                    rows={4}
-                    placeholder="describe the task..."
-                    value={this.state.newTask.description}
-                    onChange={this.handleDescriptionChange}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              borderTop: '1px solid #e8e8e8',
-              padding: '10px 16px',
-              textAlign: 'right'
-            }}
-          >
-            <Button onClick={this.handleCreateTaskBtnClick} type="primary">
-              Add
-            </Button>
-          </div>
-        </Drawer>
+        <NewTaskDrawer
+          drawerVisible={this.state.drawerVisible}
+          handleCreateTaskBtnClick={this.handleCreateTaskBtnClick}
+          handleDrawerClose={this.handleDrawerClose}
+        />
       </div>
     );
   }
@@ -188,41 +111,16 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
     });
   }
 
-  private handleCreateTaskBtnClick() {
-    const taskVal = this.state.newTask;
+  private handleCreateTaskBtnClick(newTask: INewTask) {
     const task = new Task(
-      taskVal.title,
-      taskVal.dueDate.format('YYYY-MM-DD'),
-      taskVal.description
+      newTask.title,
+      newTask.dueDate.format('YYYY-MM-DD'),
+      newTask.description
     );
     this.setState({
       tasks: this.state.tasks.concat([task])
     });
     this.handleDrawerClose();
-  }
-
-  private handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const newTask = {...this.state.newTask};
-    newTask.title = e.target.value;
-    this.setState({
-      newTask
-    });
-  }
-
-  private handleDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const newTask = {...this.state.newTask};
-    newTask.description = e.target.value;
-    this.setState({
-      newTask
-    });
-  }
-
-  private handleDueDateChange(date: Moment, dateString: string) {
-    const newTask = {...this.state.newTask};
-    newTask.dueDate = date;
-    this.setState({
-      newTask
-    });
   }
 }
 
