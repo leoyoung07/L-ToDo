@@ -2,7 +2,7 @@ import { Breadcrumb, Button, Icon, Layout } from 'antd';
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import SideBar from './SideBar';
+import SideBar, { ISideBarItem } from './SideBar';
 import TaskPanel from './TaskPanel';
 
 const { Content } = Layout;
@@ -11,6 +11,7 @@ interface IMainProps {}
 
 interface IMainState {
   siderCollapsed: boolean;
+  sideBarItems: ISideBarItem[];
 }
 
 @DragDropContext(HTML5Backend)
@@ -18,7 +19,11 @@ class Main extends React.Component<IMainProps, IMainState> {
   constructor(props: IMainProps) {
     super(props);
     this.state = {
-      siderCollapsed: true
+      siderCollapsed: true,
+      sideBarItems: [{
+        text: 'option1',
+        value: 'option1'
+      }]
     };
 
     this.handleSiderCollapse = this.handleSiderCollapse.bind(this);
@@ -27,7 +32,7 @@ class Main extends React.Component<IMainProps, IMainState> {
     return (
       <Layout>
         <Layout>
-          <SideBar collapsed={this.state.siderCollapsed}/>
+          <SideBar collapsed={this.state.siderCollapsed} items={this.state.sideBarItems}/>
           <Layout style={{ padding: '0 24px 24px' }}>
             <div className="main__header">
               <Button type="primary" onClick={this.handleSiderCollapse}>

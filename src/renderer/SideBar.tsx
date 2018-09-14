@@ -3,8 +3,15 @@ import React from 'react';
 
 const { Sider } = Layout;
 
+export interface ISideBarItem {
+  text: string;
+  value: string;
+  onClick?(e: React.MouseEvent<HTMLElement>): void;
+}
+
 interface ISideBarProps {
   collapsed: boolean;
+  items: ISideBarItem[];
 }
 
 class SideBar extends React.Component<ISideBarProps> {
@@ -23,10 +30,9 @@ class SideBar extends React.Component<ISideBarProps> {
           defaultSelectedKeys={['1']}
           style={{ height: '100%', borderRight: 0 }}
         >
-          <Menu.Item key="1">option1</Menu.Item>
-          <Menu.Item key="2">option2</Menu.Item>
-          <Menu.Item key="3">option3</Menu.Item>
-          <Menu.Item key="4">option4</Menu.Item>
+          {this.props.items.map(item => {
+            return <Menu.Item key={item.value} onKeyDown={item.onClick}>{item.text}</Menu.Item>;
+          })}
         </Menu>
       </Sider>
     );
