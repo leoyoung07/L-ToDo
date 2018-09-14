@@ -85,17 +85,7 @@ class NewTaskDrawer extends React.Component<
             </Col>
           </Row>
         </Form>
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            borderTop: '1px solid #e8e8e8',
-            padding: '10px 16px',
-            textAlign: 'right'
-          }}
-        >
+        <div className="new-task-drawer__footer">
           <Button
             onClick={() => {
               this.props.handleCreateTaskBtnClick(this.state.newTask);
