@@ -1,4 +1,5 @@
 import { Breadcrumb, Button, Icon, Layout } from 'antd';
+import moment from 'moment';
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -6,6 +7,15 @@ import SideBar, { ISideBarItem } from './SideBar';
 import TaskPanel from './TaskPanel';
 
 const { Content } = Layout;
+
+function getDaysOfWeek() {
+  const days = [];
+  for (let index = 1; index <= 7; index++) {
+    const day = moment().isoWeekday(index);
+    days.push(day.format('YYYY-MM-DD'));
+  }
+  return days;
+}
 
 interface IMainProps {}
 
@@ -18,12 +28,15 @@ interface IMainState {
 class Main extends React.Component<IMainProps, IMainState> {
   constructor(props: IMainProps) {
     super(props);
+    const days = getDaysOfWeek();
     this.state = {
       siderCollapsed: true,
-      sideBarItems: [{
-        text: 'option1',
-        value: 'option1'
-      }]
+      sideBarItems: days.map(day => {
+        return {
+          text: day,
+          value: day
+        };
+      })
     };
 
     this.handleSiderCollapse = this.handleSiderCollapse.bind(this);

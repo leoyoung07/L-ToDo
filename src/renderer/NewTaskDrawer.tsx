@@ -77,7 +77,7 @@ class NewTaskDrawer extends React.Component<
               <Form.Item label="Description">
                 <Input.TextArea
                   rows={4}
-                  placeholder="describe the task..."
+                  placeholder="Describe the task..."
                   value={this.state.newTask.description}
                   onChange={this.handleDescriptionChange}
                 />
