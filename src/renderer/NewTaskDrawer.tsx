@@ -84,7 +84,7 @@ class NewTaskDrawer extends React.Component<
     };
     return (
       <Drawer
-        title="Add New Task"
+        title={this.props.current ? 'Edit Task' : 'Add New Task'}
         width={500}
         placement="right"
         onClose={this.props.handleDrawerClose}
@@ -108,7 +108,7 @@ class NewTaskDrawer extends React.Component<
           </Row>
           <Row gutter={16}>
             <Col span={24}>
-              <Form.Item label="DateTime">
+              <Form.Item label="Date">
                 <DatePicker
                   value={this.state.newTask.dueDate}
                   style={{ width: '100%' }}
