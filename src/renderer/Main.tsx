@@ -58,6 +58,13 @@ class Main extends React.Component<IMainProps, IMainState> {
     this.handleItemClick = this.handleItemClick.bind(this);
     this.handleEditBtnClick = this.handleEditBtnClick.bind(this);
     this.handleSaveTaskBtnClick = this.handleSaveTaskBtnClick.bind(this);
+
+    (async () => {
+      const tasks = await this.readFromFile();
+      this.setState({
+        tasks
+      });
+    })();
   }
   render() {
     return (
@@ -123,19 +130,21 @@ class Main extends React.Component<IMainProps, IMainState> {
       drawerVisible: false
     });
   }
-  private handleCreateTaskBtnClick(newTask: INewTask) {
+  private async handleCreateTaskBtnClick(newTask: INewTask) {
     const task = new Task(
       newTask.title,
       newTask.dueDate.format('YYYY-MM-DD'),
       newTask.description
     );
+    const newTasks = this.state.tasks.concat([task]);
     this.setState({
-      tasks: this.state.tasks.concat([task])
+      tasks: newTasks
     });
     this.handleDrawerClose();
+    await this.saveToFile(newTasks);
   }
 
-  private handleSaveTaskBtnClick(id: string, newTask: INewTask) {
+  private async handleSaveTaskBtnClick(id: string, newTask: INewTask) {
     const tasks = DeepClone(this.state.tasks);
     const task = tasks.find(t => t.Id === id);
     if (task) {
@@ -146,9 +155,10 @@ class Main extends React.Component<IMainProps, IMainState> {
         tasks: tasks
       });
       this.handleDrawerClose();
+      await this.saveToFile(tasks);
     }
   }
-  private handleTaskStateChange(id: string, state: TaskState) {
+  private async handleTaskStateChange(id: string, state: TaskState) {
     const newTasks = DeepClone(this.state.tasks);
     const currentTask = newTasks.find(t => t.Id === id);
     if (currentTask) {
@@ -156,6 +166,7 @@ class Main extends React.Component<IMainProps, IMainState> {
       this.setState({
         tasks: newTasks
       });
+      await this.saveToFile(newTasks);
     }
   }
 
@@ -170,6 +181,20 @@ class Main extends React.Component<IMainProps, IMainState> {
       currentEditingTask: task,
       drawerVisible: true
     });
+  }
+
+  private async saveToFile(tasks: Task[]) {
+    // TODO tell main process to save to file
+    // tslint:disable-next-line:no-console
+    console.log('save to file...');
+    return Promise.resolve();
+  }
+
+  private async readFromFile(): Promise<Task[]> {
+    // TODO tell main process to read from file
+    // tslint:disable-next-line:no-console
+    console.log('read from file...');
+    return Promise.resolve([]);
   }
 }
 
