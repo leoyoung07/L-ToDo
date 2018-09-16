@@ -1,4 +1,4 @@
-import { Card } from 'antd';
+import { Card, Icon } from 'antd';
 import React from 'react';
 import {
   ConnectDragSource,
@@ -10,10 +10,11 @@ import Task, { TaskState } from './Task';
 
 interface ITaskCardProps {
   task: Task;
-
-  handleTaskStateChange: (taskId: string, newState: TaskState) => void;
   isDragging?: boolean;
   connectDragSource?: ConnectDragSource;
+
+  handleTaskStateChange(taskId: string, newState: TaskState): void;
+  handleEditBtnClick(task: Task): void;
 }
 
 interface ITaskCardState {}
@@ -61,7 +62,17 @@ class TaskCard extends React.Component<ITaskCardProps, ITaskCardState> {
             <Card
               className="task-card"
               title={cardTitle}
-              extra={<a href="#">More</a>}
+              extra={
+                <a
+                  href="#"
+                  onClick={() => {
+                    this.props.handleEditBtnClick(this.props.task);
+                  }}
+                >
+                  <Icon type="edit" style={{ marginRight: '5px' }} />
+                  Edit
+                </a>
+              }
               hoverable={true}
             >
               <p>{this.props.task.Content}</p>

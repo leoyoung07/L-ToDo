@@ -1,6 +1,7 @@
 import { Button, Col, DatePicker, Drawer, Form, Input, Row } from 'antd';
 import moment, { Moment } from 'moment';
 import React from 'react';
+import Task from './Task';
 
 export interface INewTask {
   title: string;
@@ -14,7 +15,10 @@ interface INewTaskDrawerStatus {
 
 interface INewTaskDrawerProps {
   drawerVisible: boolean;
+
+  current?: Task;
   handleCreateTaskBtnClick(newTask: INewTask): void;
+  handleSaveTaskBtnClick(id: string, newTask: INewTask): void;
   handleDrawerClose(): void;
 }
 
@@ -35,7 +39,49 @@ class NewTaskDrawer extends React.Component<
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
     this.handleDueDateChange = this.handleDueDateChange.bind(this);
   }
+
+  componentWillReceiveProps(nextProps: INewTaskDrawerProps) {
+    if (nextProps.current) {
+      const newTask: INewTask = {
+        title: nextProps.current.Title,
+        description: nextProps.current.Content ? nextProps.current.Content : '',
+        dueDate: moment(nextProps.current.DueDate)
+      };
+      this.setState({
+        newTask: newTask
+      });
+    }
+  }
+
   render() {
+    const BottomButtons = () => {
+      if (this.props.current) {
+        return (
+          <Button
+            onClick={() => {
+              this.props.handleSaveTaskBtnClick(
+                this.props.current!.Id,
+                this.state.newTask
+              );
+            }}
+            type="primary"
+          >
+            Save
+          </Button>
+        );
+      } else {
+        return (
+          <Button
+            onClick={() => {
+              this.props.handleCreateTaskBtnClick(this.state.newTask);
+            }}
+            type="primary"
+          >
+            Add
+          </Button>
+        );
+      }
+    };
     return (
       <Drawer
         title="Add New Task"
@@ -86,14 +132,7 @@ class NewTaskDrawer extends React.Component<
           </Row>
         </Form>
         <div className="new-task-drawer__footer">
-          <Button
-            onClick={() => {
-              this.props.handleCreateTaskBtnClick(this.state.newTask);
-            }}
-            type="primary"
-          >
-            Add
-          </Button>
+          <BottomButtons />
         </div>
       </Drawer>
     );

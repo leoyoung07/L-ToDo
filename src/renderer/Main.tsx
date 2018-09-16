@@ -29,6 +29,7 @@ interface IMainState {
   drawerVisible: boolean;
   tasks: Task[];
   date: string;
+  currentEditingTask?: Task;
 }
 
 @DragDropContext(HTML5Backend)
@@ -50,11 +51,13 @@ class Main extends React.Component<IMainProps, IMainState> {
     };
 
     this.handleSiderCollapse = this.handleSiderCollapse.bind(this);
-    this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+    this.handleAddBtnClick = this.handleAddBtnClick.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleCreateTaskBtnClick = this.handleCreateTaskBtnClick.bind(this);
     this.handleTaskStateChange = this.handleTaskStateChange.bind(this);
     this.handleItemClick = this.handleItemClick.bind(this);
+    this.handleEditBtnClick = this.handleEditBtnClick.bind(this);
+    this.handleSaveTaskBtnClick = this.handleSaveTaskBtnClick.bind(this);
   }
   render() {
     return (
@@ -82,15 +85,20 @@ class Main extends React.Component<IMainProps, IMainState> {
             </div>
             <Content className="main__content">
               <TaskPanel
-                tasks={this.state.tasks.filter(task => task.DueDate === this.state.date)}
-                handleDrawerOpen={this.handleDrawerOpen}
+                tasks={this.state.tasks.filter(
+                  task => task.DueDate === this.state.date
+                )}
+                handleAddBtnClick={this.handleAddBtnClick}
+                handleEditBtnClick={this.handleEditBtnClick}
                 handleTaskStateChange={this.handleTaskStateChange}
               />
             </Content>
             <NewTaskDrawer
               drawerVisible={this.state.drawerVisible}
               handleCreateTaskBtnClick={this.handleCreateTaskBtnClick}
+              handleSaveTaskBtnClick={this.handleSaveTaskBtnClick}
               handleDrawerClose={this.handleDrawerClose}
+              current={this.state.currentEditingTask}
             />
           </Layout>
         </Layout>
@@ -104,8 +112,9 @@ class Main extends React.Component<IMainProps, IMainState> {
     });
   }
 
-  private handleDrawerOpen() {
+  private handleAddBtnClick() {
     this.setState({
+      currentEditingTask: undefined,
       drawerVisible: true
     });
   }
@@ -126,6 +135,19 @@ class Main extends React.Component<IMainProps, IMainState> {
     this.handleDrawerClose();
   }
 
+  private handleSaveTaskBtnClick(id: string, newTask: INewTask) {
+    const tasks = DeepClone(this.state.tasks);
+    const task = tasks.find(t => t.Id === id);
+    if (task) {
+      task.Title = newTask.title;
+      task.Content = newTask.description;
+      task.DueDate = newTask.dueDate.format('YYYY-MM-DD');
+      this.setState({
+        tasks: tasks
+      });
+      this.handleDrawerClose();
+    }
+  }
   private handleTaskStateChange(id: string, state: TaskState) {
     const newTasks = DeepClone(this.state.tasks);
     const currentTask = newTasks.find(t => t.Id === id);
@@ -140,6 +162,13 @@ class Main extends React.Component<IMainProps, IMainState> {
   private handleItemClick(key: string) {
     this.setState({
       date: key
+    });
+  }
+
+  private handleEditBtnClick(task: Task) {
+    this.setState({
+      currentEditingTask: task,
+      drawerVisible: true
     });
   }
 }

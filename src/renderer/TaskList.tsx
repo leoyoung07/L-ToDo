@@ -18,10 +18,11 @@ export interface ITaskListProps {
   tasks: Task[];
   state: TaskState;
 
-  handleTaskStateChange: (taskId: string, newState: TaskState) => void;
   canDrop?: boolean;
   isOver?: boolean;
   connectDropTarget?: ConnectDropTarget;
+  handleTaskStateChange: (taskId: string, newState: TaskState) => void;
+  handleEditBtnClick(task: Task): void;
 }
 
 @DropTarget(
@@ -52,6 +53,7 @@ class TaskList extends React.Component<ITaskListProps> {
                       key={task.Id}
                       task={task}
                       handleTaskStateChange={this.props.handleTaskStateChange}
+                      handleEditBtnClick={this.props.handleEditBtnClick}
                     />
                   );
                 })}

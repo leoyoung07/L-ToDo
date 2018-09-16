@@ -5,8 +5,9 @@ import TaskList from './TaskList';
 
 interface ITaskPanelProps {
   tasks: Task[];
-  handleDrawerOpen(): void;
+  handleAddBtnClick(): void;
   handleTaskStateChange(id: string, state: TaskState): void;
+  handleEditBtnClick(task: Task): void;
 }
 interface ITaskPanelState {
 
@@ -38,7 +39,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                   type="primary"
                   size="small"
                   className="main__split-panel-icon-btn"
-                  onClick={this.props.handleDrawerOpen}
+                  onClick={this.props.handleAddBtnClick}
                 />
               </h3>
               <Divider className="main__split-panel-divider" />
@@ -46,6 +47,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                 state={TaskState.TODO}
                 tasks={this.props.tasks}
                 handleTaskStateChange={this.props.handleTaskStateChange}
+                handleEditBtnClick={this.props.handleEditBtnClick}
               />
             </div>
           </Col>
@@ -58,6 +60,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
               <TaskList
                 state={TaskState.DOING}
                 tasks={this.props.tasks}
+                handleEditBtnClick={this.props.handleEditBtnClick}
                 handleTaskStateChange={this.props.handleTaskStateChange}
               />
             </div>
@@ -71,6 +74,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
               <TaskList
                 state={TaskState.DONE}
                 tasks={this.props.tasks}
+                handleEditBtnClick={this.props.handleEditBtnClick}
                 handleTaskStateChange={this.props.handleTaskStateChange}
               />
             </div>
