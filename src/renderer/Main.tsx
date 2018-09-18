@@ -29,7 +29,8 @@ interface IMainState {
   drawerVisible: boolean;
   tasks: Task[];
   date: string;
-  currentEditingTask?: Task;
+  draftTask: Task;
+  isNewMode: boolean;
 }
 
 @DragDropContext(HTML5Backend)
@@ -47,7 +48,9 @@ class Main extends React.Component<IMainProps, IMainState> {
       }),
       drawerVisible: false,
       tasks: [],
-      date: moment().format('YYYY-MM-DD')
+      date: moment().format('YYYY-MM-DD'),
+      isNewMode: true,
+      draftTask: new Task('', moment().format('YYYY-MM-DD'))
     };
 
     this.handleSiderCollapse = this.handleSiderCollapse.bind(this);
@@ -55,7 +58,7 @@ class Main extends React.Component<IMainProps, IMainState> {
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleCreateTaskBtnClick = this.handleCreateTaskBtnClick.bind(this);
     this.handleTaskStateChange = this.handleTaskStateChange.bind(this);
-    this.handleItemClick = this.handleItemClick.bind(this);
+    this.handleSideBarItemClick = this.handleSideBarItemClick.bind(this);
     this.handleEditBtnClick = this.handleEditBtnClick.bind(this);
     this.handleSaveTaskBtnClick = this.handleSaveTaskBtnClick.bind(this);
 
@@ -73,7 +76,7 @@ class Main extends React.Component<IMainProps, IMainState> {
           <SideBar
             collapsed={this.state.siderCollapsed}
             items={this.state.sideBarItems}
-            handleItemClick={this.handleItemClick}
+            handleItemClick={this.handleSideBarItemClick}
             current={this.state.date}
           />
           <Layout style={{ padding: '0 24px 24px' }}>
@@ -105,7 +108,9 @@ class Main extends React.Component<IMainProps, IMainState> {
               handleCreateTaskBtnClick={this.handleCreateTaskBtnClick}
               handleSaveTaskBtnClick={this.handleSaveTaskBtnClick}
               handleDrawerClose={this.handleDrawerClose}
-              current={this.state.currentEditingTask}
+              draftTask={this.state.draftTask}
+              isNewMode={this.state.isNewMode}
+              key={this.state.draftTask.Id}
             />
           </Layout>
         </Layout>
@@ -118,63 +123,63 @@ class Main extends React.Component<IMainProps, IMainState> {
       siderCollapsed: !this.state.siderCollapsed
     });
   }
-
-  private handleAddBtnClick() {
-    this.setState({
-      currentEditingTask: undefined,
-      drawerVisible: true
-    });
-  }
   private handleDrawerClose() {
     this.setState({
       drawerVisible: false
     });
   }
   private async handleCreateTaskBtnClick(newTask: Task) {
-    const newTasks = this.state.tasks.concat([newTask]);
+    const tasks = DeepClone(this.state.tasks);
+    tasks.push(newTask);
     this.setState({
-      tasks: newTasks
+      tasks: tasks
     });
     this.handleDrawerClose();
-    await this.saveToFile(newTasks);
+    await this.saveToFile(tasks);
   }
 
-  private async handleSaveTaskBtnClick(id: string, newTask: Task) {
+  private async handleSaveTaskBtnClick(draftTask: Task) {
     const tasks = DeepClone(this.state.tasks);
-    const task = tasks.find(t => t.Id === id);
-    if (task) {
-      task.Title = newTask.Title;
-      task.Content = newTask.Content;
-      task.DueDate = newTask.DueDate;
+    const index = tasks.findIndex(t => t.Id === draftTask.Id);
+    if (index >= 0) {
+      tasks[index] = draftTask;
       this.setState({
         tasks: tasks
       });
-      this.handleDrawerClose();
       await this.saveToFile(tasks);
     }
+    this.handleDrawerClose();
   }
   private async handleTaskStateChange(id: string, state: TaskState) {
-    const newTasks = DeepClone(this.state.tasks);
-    const currentTask = newTasks.find(t => t.Id === id);
+    const tasks = DeepClone(this.state.tasks);
+    const currentTask = tasks.find(t => t.Id === id);
     if (currentTask) {
       currentTask.State = state;
       this.setState({
-        tasks: newTasks
+        tasks: tasks
       });
-      await this.saveToFile(newTasks);
+      await this.saveToFile(tasks);
     }
   }
 
-  private handleItemClick(key: string) {
+  private handleSideBarItemClick(key: string) {
     this.setState({
       date: key
     });
   }
 
+  private handleAddBtnClick() {
+    this.setState({
+      draftTask: new Task('', moment().format('YYYY-MM-DD')),
+      drawerVisible: true,
+      isNewMode: true
+    });
+  }
   private handleEditBtnClick(task: Task) {
     this.setState({
-      currentEditingTask: task,
-      drawerVisible: true
+      draftTask: DeepClone(task),
+      drawerVisible: true,
+      isNewMode: false
     });
   }
 
