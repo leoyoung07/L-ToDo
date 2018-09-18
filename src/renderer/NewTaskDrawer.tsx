@@ -2,23 +2,18 @@ import { Button, Col, DatePicker, Drawer, Form, Input, Row } from 'antd';
 import moment, { Moment } from 'moment';
 import React from 'react';
 import Task from './Task';
-
-export interface INewTask {
-  title: string;
-  description: string;
-  dueDate: Moment;
-}
+import { DeepClone } from './Util';
 
 interface INewTaskDrawerStatus {
-  newTask: INewTask;
+  newTask: Task;
 }
 
 interface INewTaskDrawerProps {
   drawerVisible: boolean;
 
   current?: Task;
-  handleCreateTaskBtnClick(newTask: INewTask): void;
-  handleSaveTaskBtnClick(id: string, newTask: INewTask): void;
+  handleCreateTaskBtnClick(newTask: Task): void;
+  handleSaveTaskBtnClick(id: string, newTask: Task): void;
   handleDrawerClose(): void;
 }
 
@@ -29,11 +24,7 @@ class NewTaskDrawer extends React.Component<
   constructor(props: INewTaskDrawerProps) {
     super(props);
     this.state = {
-      newTask: {
-        title: '',
-        description: '',
-        dueDate: moment()
-      }
+      newTask: new Task('', moment().format('YYYY-MM-DD'))
     };
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -42,13 +33,13 @@ class NewTaskDrawer extends React.Component<
 
   componentWillReceiveProps(nextProps: INewTaskDrawerProps) {
     if (nextProps.current) {
-      const newTask: INewTask = {
-        title: nextProps.current.Title,
-        description: nextProps.current.Content ? nextProps.current.Content : '',
-        dueDate: moment(nextProps.current.DueDate)
-      };
+      const newTask = DeepClone(nextProps.current);
       this.setState({
         newTask: newTask
+      });
+    } else {
+      this.setState({
+        newTask: new Task('', moment().format('YYYY-MM-DD'))
       });
     }
   }
@@ -99,7 +90,7 @@ class NewTaskDrawer extends React.Component<
             <Col span={24}>
               <Form.Item label="Title">
                 <Input
-                  value={this.state.newTask.title}
+                  value={this.state.newTask.Title}
                   placeholder="Something to do..."
                   onChange={this.handleTitleChange}
                 />
@@ -110,7 +101,7 @@ class NewTaskDrawer extends React.Component<
             <Col span={24}>
               <Form.Item label="Date">
                 <DatePicker
-                  value={this.state.newTask.dueDate}
+                  value={moment(this.state.newTask.DueDate)}
                   style={{ width: '100%' }}
                   placeholder="Task deadline"
                   onChange={this.handleDueDateChange}
@@ -124,7 +115,7 @@ class NewTaskDrawer extends React.Component<
                 <Input.TextArea
                   rows={4}
                   placeholder="Describe the task..."
-                  value={this.state.newTask.description}
+                  value={this.state.newTask.Content}
                   onChange={this.handleDescriptionChange}
                 />
               </Form.Item>
@@ -140,7 +131,7 @@ class NewTaskDrawer extends React.Component<
 
   private handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newTask = { ...this.state.newTask };
-    newTask.title = e.target.value;
+    newTask.Title = e.target.value;
     this.setState({
       newTask
     });
@@ -148,7 +139,7 @@ class NewTaskDrawer extends React.Component<
 
   private handleDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const newTask = { ...this.state.newTask };
-    newTask.description = e.target.value;
+    newTask.Content = e.target.value;
     this.setState({
       newTask
     });
@@ -156,7 +147,7 @@ class NewTaskDrawer extends React.Component<
 
   private handleDueDateChange(date: Moment) {
     const newTask = { ...this.state.newTask };
-    newTask.dueDate = date;
+    newTask.DueDate = date.format('YYYY-MM-DD');
     this.setState({
       newTask
     });

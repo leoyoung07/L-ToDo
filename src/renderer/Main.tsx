@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import NewTaskDrawer, { INewTask } from './NewTaskDrawer';
+import NewTaskDrawer from './NewTaskDrawer';
 import SideBar, { ISideBarItem } from './SideBar';
 import Task, { TaskState } from './Task';
 import TaskPanel from './TaskPanel';
@@ -130,13 +130,8 @@ class Main extends React.Component<IMainProps, IMainState> {
       drawerVisible: false
     });
   }
-  private async handleCreateTaskBtnClick(newTask: INewTask) {
-    const task = new Task(
-      newTask.title,
-      newTask.dueDate.format('YYYY-MM-DD'),
-      newTask.description
-    );
-    const newTasks = this.state.tasks.concat([task]);
+  private async handleCreateTaskBtnClick(newTask: Task) {
+    const newTasks = this.state.tasks.concat([newTask]);
     this.setState({
       tasks: newTasks
     });
@@ -144,13 +139,13 @@ class Main extends React.Component<IMainProps, IMainState> {
     await this.saveToFile(newTasks);
   }
 
-  private async handleSaveTaskBtnClick(id: string, newTask: INewTask) {
+  private async handleSaveTaskBtnClick(id: string, newTask: Task) {
     const tasks = DeepClone(this.state.tasks);
     const task = tasks.find(t => t.Id === id);
     if (task) {
-      task.Title = newTask.title;
-      task.Content = newTask.description;
-      task.DueDate = newTask.dueDate.format('YYYY-MM-DD');
+      task.Title = newTask.Title;
+      task.Content = newTask.Content;
+      task.DueDate = newTask.DueDate;
       this.setState({
         tasks: tasks
       });
