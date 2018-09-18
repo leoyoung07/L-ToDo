@@ -50,7 +50,7 @@ class Main extends React.Component<IMainProps, IMainState> {
       tasks: [],
       date: moment().format('YYYY-MM-DD'),
       isNewMode: true,
-      draftTask: new Task('', moment().format('YYYY-MM-DD'))
+      draftTask: new Task()
     };
 
     this.handleSiderCollapse = this.handleSiderCollapse.bind(this);
@@ -170,7 +170,7 @@ class Main extends React.Component<IMainProps, IMainState> {
 
   private handleAddBtnClick() {
     this.setState({
-      draftTask: new Task('', moment().format('YYYY-MM-DD')),
+      draftTask: new Task(),
       drawerVisible: true,
       isNewMode: true
     });

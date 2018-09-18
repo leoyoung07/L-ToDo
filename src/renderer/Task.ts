@@ -1,3 +1,4 @@
+import moment from 'moment';
 export default class Task {
   public readonly Id: string;
 
@@ -5,8 +6,17 @@ export default class Task {
 
   public State: TaskState;
 
-  constructor(public Title: string, public DueDate: string, public Content?: string) {
+  public Title: string;
+
+  public DueDate: string;
+
+  public Content: string;
+
+  constructor(title?: string, dueDate?: string, content?: string) {
     const now = (new Date()).getTime();
+    this.Title = title ? title : '';
+    this.DueDate = dueDate ? dueDate : moment().format('YYYY-MM-DD');
+    this.Content = content ? content : '';
     this.CreateTime = now;
     this.Id = now.toString();
     this.State = TaskState.TODO;
