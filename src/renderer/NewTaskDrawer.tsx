@@ -1,7 +1,7 @@
 import { Button, Col, DatePicker, Drawer, Form, Input, Row } from 'antd';
 import moment, { Moment } from 'moment';
 import React from 'react';
-import Task from './Task';
+import Task from '../common/Task';
 
 interface INewTaskDrawerStatus {
   draftTask: Task;

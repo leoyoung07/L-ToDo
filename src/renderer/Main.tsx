@@ -4,9 +4,9 @@ import moment from 'moment';
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import Task, { TaskState } from '../common/Task';
 import NewTaskDrawer from './NewTaskDrawer';
 import SideBar, { ISideBarItem } from './SideBar';
-import Task, { TaskState } from './Task';
 import TaskPanel from './TaskPanel';
 import { DeepClone } from './Util';
 
@@ -188,21 +188,21 @@ class Main extends React.Component<IMainProps, IMainState> {
     // TODO tell main process to save to file
     // tslint:disable-next-line:no-console
     console.log('save to file...');
-    return await this.sendMsgToMain('save', tasks);
+    return await this.sendMsgToMain<boolean>('save', tasks);
   }
 
   private async readFromFile(): Promise<Task[]> {
     // TODO tell main process to read from file
     // tslint:disable-next-line:no-console
     console.log('read from file...');
-    return Promise.resolve([]);
+    return await this.sendMsgToMain<Task[]>('read');
   }
 
   // tslint:disable-next-line:no-any
-  private sendMsgToMain(channel: string, message: any, timeout: number = 5000) {
-    return new Promise<string>((resolve, reject) => {
+  private sendMsgToMain<T>(channel: string, message?: any, timeout: number = 5000) {
+    return new Promise<T>((resolve, reject) => {
       // tslint:disable-next-line:no-any
-      ipcRenderer.on(channel, (event: Electron.Event, args: string) => {
+      ipcRenderer.on(channel, (event: Electron.Event, args: T) => {
         resolve(args);
       });
       ipcRenderer.send(channel, message);

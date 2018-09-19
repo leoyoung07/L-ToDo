@@ -5,7 +5,7 @@ import {
   DropTargetConnector,
   DropTargetMonitor
 } from 'react-dnd';
-import Task, { TaskState } from './Task';
+import Task, { TaskState } from '../common/Task';
 import TaskCard from './TaskCard';
 
 const boxTarget = {

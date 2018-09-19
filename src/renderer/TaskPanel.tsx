@@ -1,6 +1,6 @@
 import { Button, Col, Divider, Row } from 'antd';
 import React from 'react';
-import Task, { TaskState } from './Task';
+import Task, { TaskState } from '../common/Task';
 import TaskList from './TaskList';
 
 interface ITaskPanelProps {

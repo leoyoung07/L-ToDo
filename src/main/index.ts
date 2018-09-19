@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import installExtension, {
   ExtensionReference,
   REACT_DEVELOPER_TOOLS,
@@ -6,6 +6,7 @@ import installExtension, {
 } from 'electron-devtools-installer';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
+import Task from '../common/Task';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -61,6 +62,18 @@ function createMainWindow() {
 
   window.webContents.on('did-finish-load', () => {
     // when page load
+  });
+
+  ipcMain.on('save', (event: Electron.Event, args: Task[]) => {
+    // tslint:disable-next-line:no-console
+    console.log('main process save...');
+    event.sender.send('save', true);
+  });
+
+  ipcMain.on('read', (event: Electron.Event) => {
+    // tslint:disable-next-line:no-console
+    console.log('main process read...');
+    event.sender.send('read', [new Task()]);
   });
 
   return window;
