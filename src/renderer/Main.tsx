@@ -1,4 +1,5 @@
 import { Breadcrumb, Button, Icon, Layout } from 'antd';
+import { ipcRenderer } from 'electron';
 import moment from 'moment';
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
@@ -187,7 +188,7 @@ class Main extends React.Component<IMainProps, IMainState> {
     // TODO tell main process to save to file
     // tslint:disable-next-line:no-console
     console.log('save to file...');
-    return Promise.resolve();
+    return await this.sendMsgToMain('save', tasks);
   }
 
   private async readFromFile(): Promise<Task[]> {
@@ -195,6 +196,20 @@ class Main extends React.Component<IMainProps, IMainState> {
     // tslint:disable-next-line:no-console
     console.log('read from file...');
     return Promise.resolve([]);
+  }
+
+  // tslint:disable-next-line:no-any
+  private sendMsgToMain(channel: string, message: any, timeout: number = 5000) {
+    return new Promise<string>((resolve, reject) => {
+      // tslint:disable-next-line:no-any
+      ipcRenderer.on(channel, (event: Electron.Event, args: string) => {
+        resolve(args);
+      });
+      ipcRenderer.send(channel, message);
+      setTimeout(() => {
+        reject(`Send message timeout ${timeout} ms`);
+      }, timeout);
+    });
   }
 }
 
