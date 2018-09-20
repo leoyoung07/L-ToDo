@@ -67,6 +67,9 @@ function createMainWindow() {
   ipcMain.on('save', (event: Electron.Event, args: Task[]) => {
     // tslint:disable-next-line:no-console
     console.log('main process save...');
+    const savePath = path.join(app.getPath('appData'), 'l_todo', 'todos.json');
+    // tslint:disable-next-line:no-console
+    console.log(savePath);
     event.sender.send('save', true);
   });
 
