@@ -4,6 +4,7 @@ import installExtension, {
   REACT_DEVELOPER_TOOLS,
   REDUX_DEVTOOLS
 } from 'electron-devtools-installer';
+import * as fs from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 import Task from '../common/Task';
@@ -16,13 +17,11 @@ const isDebug = !!process.env.DEBUG;
 let mainWindow: BrowserWindow | null;
 
 function createMainWindow() {
-  const window = new BrowserWindow(
-    {
-      webPreferences: {
-        webSecurity: false
-      }
+  const window = new BrowserWindow({
+    webPreferences: {
+      webSecurity: false
     }
-  );
+  });
 
   if (isDevelopment) {
     installDevExtension(REACT_DEVELOPER_TOOLS);
@@ -64,19 +63,37 @@ function createMainWindow() {
     // when page load
   });
 
+  const dataDir = path.join(app.getPath('appData'), 'l_todo');
+  const savePath = path.join(dataDir, 'todos.json');
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
+  }
   ipcMain.on('save', (event: Electron.Event, args: Task[]) => {
     // tslint:disable-next-line:no-console
     console.log('main process save...');
-    const savePath = path.join(app.getPath('appData'), 'l_todo', 'todos.json');
-    // tslint:disable-next-line:no-console
-    console.log(savePath);
-    event.sender.send('save', true);
+    fs.writeFile(savePath, JSON.stringify(args), (err) => {
+      // tslint:disable-next-line:no-console
+      console.log(savePath);
+      if (err) {
+        // tslint:disable-next-line:no-console
+        console.log(err);
+        event.sender.send('save', false);
+      } else {
+        event.sender.send('save', true);
+      }
+    });
   });
 
   ipcMain.on('read', (event: Electron.Event) => {
     // tslint:disable-next-line:no-console
     console.log('main process read...');
-    event.sender.send('read', [new Task()]);
+    fs.readFile(savePath, (err, data) => {
+      if (err) {
+        event.sender.send('read', null);
+      } else {
+        event.sender.send('read', JSON.parse(data.toString()) as Task[]);
+      }
+    });
   });
 
   return window;
