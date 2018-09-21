@@ -9,6 +9,8 @@ import NewTaskDrawer from './NewTaskDrawer';
 import SideBar, { ISideBarItem } from './SideBar';
 import TaskPanel from './TaskPanel';
 import { DeepClone } from './Util';
+import { IpcResponse, IpcResponseSuccess, IpcResponseError } from '../common/IPC';
+import ErrorCode from '../common/ErrorCode';
 
 const { Content } = Layout;
 
@@ -202,8 +204,14 @@ class Main extends React.Component<IMainProps, IMainState> {
   private sendMsgToMain<T>(channel: string, message?: any, timeout: number = 5000) {
     return new Promise<T>((resolve, reject) => {
       // tslint:disable-next-line:no-any
-      ipcRenderer.on(channel, (event: Electron.Event, args: T) => {
-        resolve(args);
+      ipcRenderer.on(channel, (event: Electron.Event, res: IpcResponse) => {
+        if (res.code === ErrorCode.SUCCESS) {
+          res = res as IpcResponseSuccess;
+          resolve(res.data as T);
+        } else {
+          res = res as IpcResponseError;
+          reject(res.error);
+        }
       });
       ipcRenderer.send(channel, message);
       setTimeout(() => {

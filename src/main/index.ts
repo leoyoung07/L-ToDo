@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 import Task from '../common/Task';
+import ErrorCode from '../common/ErrorCode';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -71,15 +72,21 @@ function createMainWindow() {
   ipcMain.on('save', (event: Electron.Event, args: Task[]) => {
     // tslint:disable-next-line:no-console
     console.log('main process save...');
-    fs.writeFile(savePath, JSON.stringify(args), (err) => {
+    fs.writeFile(savePath, JSON.stringify(args), err => {
       // tslint:disable-next-line:no-console
       console.log(savePath);
       if (err) {
         // tslint:disable-next-line:no-console
         console.log(err);
-        event.sender.send('save', false);
+        event.sender.send('save', {
+          code: ErrorCode.FILE_SAVE_ERROR,
+          error: err
+        });
       } else {
-        event.sender.send('save', true);
+        event.sender.send('save', {
+          code: ErrorCode.SUCCESS,
+          data: null
+        });
       }
     });
   });
@@ -89,9 +96,15 @@ function createMainWindow() {
     console.log('main process read...');
     fs.readFile(savePath, (err, data) => {
       if (err) {
-        event.sender.send('read', null);
+        event.sender.send('read', {
+          code: ErrorCode.FILE_READ_ERROR,
+          error: err
+        });
       } else {
-        event.sender.send('read', JSON.parse(data.toString()) as Task[]);
+        event.sender.send('read', {
+          code: ErrorCode.SUCCESS,
+          data: JSON.parse(data.toString()) as Task[]
+        });
       }
     });
   });
