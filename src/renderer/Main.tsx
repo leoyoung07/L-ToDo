@@ -4,13 +4,13 @@ import moment from 'moment';
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import ErrorCode from '../common/ErrorCode';
+import { IpcResponse, IpcResponseError, IpcResponseSuccess } from '../common/IPC';
 import Task, { TaskState } from '../common/Task';
 import NewTaskDrawer from './NewTaskDrawer';
 import SideBar, { ISideBarItem } from './SideBar';
 import TaskPanel from './TaskPanel';
 import { DeepClone } from './Util';
-import { IpcResponse, IpcResponseSuccess, IpcResponseError } from '../common/IPC';
-import ErrorCode from '../common/ErrorCode';
 
 const { Content } = Layout;
 
