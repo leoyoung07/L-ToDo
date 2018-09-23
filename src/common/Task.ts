@@ -1,4 +1,10 @@
 import moment from 'moment';
+
+export enum TaskState {
+  TODO = 'TODO',
+  DOING = 'DOING',
+  DONE = 'DONE'
+}
 export default class Task {
   public readonly Id: string;
 
@@ -21,10 +27,4 @@ export default class Task {
     this.Id = now.toString();
     this.State = TaskState.TODO;
   }
-}
-
-export enum TaskState {
-  TODO = 'TODO',
-  DOING = 'DOING',
-  DONE = 'DONE'
 }
