@@ -7,8 +7,8 @@ import installExtension, {
 import * as fs from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
-import Task from '../common/Task';
 import ErrorCode from '../common/ErrorCode';
+import Task from '../common/Task';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -64,6 +64,43 @@ function createMainWindow() {
     // when page load
   });
 
+  initIpc();
+
+  return window;
+}
+
+// quit application when all windows are closed
+app.on('window-all-closed', () => {
+  // on macOS it is common for applications to stay open until the user explicitly quits
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  // on macOS it is common to re-create a window even after all windows have been closed
+  if (mainWindow === null) {
+    mainWindow = createMainWindow();
+  }
+});
+
+// create main BrowserWindow when electron is ready
+app.on('ready', () => {
+  mainWindow = createMainWindow();
+});
+
+async function installDevExtension(extension: ExtensionReference) {
+  try {
+    let name = await installExtension(extension);
+    // tslint:disable-next-line:no-console
+    console.log(`Added Extension:  ${name}`);
+  } catch (error) {
+    // tslint:disable-next-line:no-console
+    console.log('An error occurred: ', error);
+  }
+}
+
+function initIpc() {
   const dataDir = path.join(app.getPath('appData'), 'l_todo');
   const savePath = path.join(dataDir, 'todos.json');
   if (!fs.existsSync(dataDir)) {
@@ -108,37 +145,4 @@ function createMainWindow() {
       }
     });
   });
-
-  return window;
-}
-
-// quit application when all windows are closed
-app.on('window-all-closed', () => {
-  // on macOS it is common for applications to stay open until the user explicitly quits
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  // on macOS it is common to re-create a window even after all windows have been closed
-  if (mainWindow === null) {
-    mainWindow = createMainWindow();
-  }
-});
-
-// create main BrowserWindow when electron is ready
-app.on('ready', () => {
-  mainWindow = createMainWindow();
-});
-
-async function installDevExtension(extension: ExtensionReference) {
-  try {
-    let name = await installExtension(extension);
-    // tslint:disable-next-line:no-console
-    console.log(`Added Extension:  ${name}`);
-  } catch (error) {
-    // tslint:disable-next-line:no-console
-    console.log('An error occurred: ', error);
-  }
 }
