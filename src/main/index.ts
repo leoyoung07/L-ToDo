@@ -5,6 +5,7 @@ import installExtension, {
   REDUX_DEVTOOLS
 } from 'electron-devtools-installer';
 import * as fs from 'fs';
+import * as net from 'net';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 import ErrorCode from '../common/ErrorCode';
@@ -65,6 +66,8 @@ function createMainWindow() {
   });
 
   initIpc();
+
+  initSocket();
 
   return window;
 }
@@ -144,5 +147,26 @@ function initIpc() {
         });
       }
     });
+  });
+}
+
+function initSocket() {
+  const socket = net.connect(
+    7269,
+    '123.206.255.153',
+    () => {
+      // tslint:disable-next-line:no-console
+      console.log('server connected...');
+    }
+  );
+
+  socket.on('data', data => {
+    // tslint:disable-next-line:no-console
+    console.log(data.toString());
+  });
+
+  socket.on('error', err => {
+    // tslint:disable-next-line:no-console
+    console.log(err);
   });
 }
