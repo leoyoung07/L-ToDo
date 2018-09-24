@@ -157,6 +157,7 @@ function initSocket() {
     () => {
       // tslint:disable-next-line:no-console
       console.log('server connected...');
+      socket.write('hello, server\n');
     }
   );
 
@@ -168,5 +169,10 @@ function initSocket() {
   socket.on('error', err => {
     // tslint:disable-next-line:no-console
     console.log(err);
+  });
+
+  socket.on('end', () => {
+    // tslint:disable-next-line:no-console
+    console.log('disconnected from server...');
   });
 }
