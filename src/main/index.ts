@@ -17,7 +17,9 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const isDebug = !!process.env.DEBUG;
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
-let mainWindow: BrowserWindow | null;
+let mainWindow: BrowserWindow | null = null;
+
+let socket: net.Socket | null = null;
 
 function createMainWindow() {
   const window = new BrowserWindow({
@@ -68,7 +70,7 @@ function createMainWindow() {
 
   initIpc();
 
-  initSocket();
+  socket = initSocket();
 
   return window;
 }
@@ -149,31 +151,60 @@ function initIpc() {
       }
     });
   });
+
+  ipcMain.on(IpcActions.SERVER_UPLOAD, (event: Electron.Event) => {
+    // tslint:disable-next-line:no-console
+    console.log('main process upload...');
+    fs.readFile(savePath, (err, data) => {
+      if (err) {
+        event.sender.send(IpcActions.SERVER_UPLOAD, {
+          code: ErrorCode.SERVER_UPLOAD_ERROR,
+          error: err
+        });
+      } else {
+        if (socket) {
+          socket.write(data.toString(), () => {
+            event.sender.send(IpcActions.SERVER_UPLOAD, {
+              code: ErrorCode.SUCCESS,
+              data: null
+            });
+          });
+        } else {
+          event.sender.send(IpcActions.SERVER_UPLOAD, {
+            code: ErrorCode.SERVER_UPLOAD_ERROR,
+            error: new Error('socket not initialized')
+          });
+        }
+      }
+    });
+  });
 }
 
 function initSocket() {
-  const socket = net.connect(
+  const sock = net.connect(
     7269,
     '123.206.255.153',
     () => {
       // tslint:disable-next-line:no-console
       console.log('server connected...');
-      socket.write('hello, server\n');
+      sock.write('hello, server\n');
     }
   );
 
-  socket.on('data', data => {
+  sock.on('data', data => {
     // tslint:disable-next-line:no-console
     console.log(data.toString());
   });
 
-  socket.on('error', err => {
+  sock.on('error', err => {
     // tslint:disable-next-line:no-console
     console.log(err);
   });
 
-  socket.on('end', () => {
+  sock.on('end', () => {
     // tslint:disable-next-line:no-console
     console.log('disconnected from server...');
   });
+
+  return sock;
 }

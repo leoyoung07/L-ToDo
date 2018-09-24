@@ -5,7 +5,12 @@ import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import ErrorCode from '../common/ErrorCode';
-import { IpcActions, IpcResponse, IpcResponseError, IpcResponseSuccess } from '../common/IPC';
+import {
+  IpcActions,
+  IpcResponse,
+  IpcResponseError,
+  IpcResponseSuccess
+} from '../common/IPC';
 import Task, { TaskState } from '../common/Task';
 import NewTaskDrawer from './NewTaskDrawer';
 import SideBar, { ISideBarItem } from './SideBar';
@@ -138,7 +143,7 @@ class Main extends React.Component<IMainProps, IMainState> {
       tasks: tasks
     });
     this.handleDrawerClose();
-    await this.saveToFile(tasks);
+    await this.saveTasks(tasks);
   }
 
   private async handleSaveTaskBtnClick(draftTask: Task) {
@@ -149,7 +154,7 @@ class Main extends React.Component<IMainProps, IMainState> {
       this.setState({
         tasks: tasks
       });
-      await this.saveToFile(tasks);
+      await this.saveTasks(tasks);
     }
     this.handleDrawerClose();
   }
@@ -161,7 +166,7 @@ class Main extends React.Component<IMainProps, IMainState> {
       this.setState({
         tasks: tasks
       });
-      await this.saveToFile(tasks);
+      await this.saveTasks(tasks);
     }
   }
 
@@ -186,22 +191,35 @@ class Main extends React.Component<IMainProps, IMainState> {
     });
   }
 
+  private async saveTasks(tasks: Task[]) {
+    await this.saveToFile(tasks);
+    await this.uploadToServer();
+  }
+
   private async saveToFile(tasks: Task[]) {
-    // TODO tell main process to save to file
     // tslint:disable-next-line:no-console
     console.log('save to file...');
-    return await this.sendMsgToMain<boolean>(IpcActions.SAVE, tasks);
+    return await this.sendMsgToMain<null>(IpcActions.SAVE, tasks);
   }
 
   private async readFromFile(): Promise<Task[]> {
-    // TODO tell main process to read from file
     // tslint:disable-next-line:no-console
     console.log('read from file...');
     return await this.sendMsgToMain<Task[]>(IpcActions.READ);
   }
 
-  // tslint:disable-next-line:no-any
-  private sendMsgToMain<T>(channel: string, message?: any, timeout: number = 5000) {
+  private async uploadToServer() {
+    // tslint:disable-next-line:no-console
+    console.log('upload to server...');
+    return await this.sendMsgToMain<null>(IpcActions.SERVER_UPLOAD);
+  }
+
+  private sendMsgToMain<T>(
+    channel: string,
+    // tslint:disable-next-line:no-any
+    message?: any,
+    timeout: number = 5000
+  ) {
     return new Promise<T>((resolve, reject) => {
       // tslint:disable-next-line:no-any
       ipcRenderer.on(channel, (event: Electron.Event, res: IpcResponse) => {
