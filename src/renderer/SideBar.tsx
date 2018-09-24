@@ -23,7 +23,7 @@ class SideBar extends React.Component<ISideBarProps> {
         collapsedWidth={0}
         trigger={null}
         collapsed={this.props.collapsed}
-        width={120}
+        width={130}
         style={{ background: '#fff' }}
       >
         <Menu

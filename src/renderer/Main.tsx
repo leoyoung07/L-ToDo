@@ -5,7 +5,7 @@ import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import ErrorCode from '../common/ErrorCode';
-import { IpcResponse, IpcResponseError, IpcResponseSuccess } from '../common/IPC';
+import { IpcActions, IpcResponse, IpcResponseError, IpcResponseSuccess } from '../common/IPC';
 import Task, { TaskState } from '../common/Task';
 import NewTaskDrawer from './NewTaskDrawer';
 import SideBar, { ISideBarItem } from './SideBar';
@@ -190,14 +190,14 @@ class Main extends React.Component<IMainProps, IMainState> {
     // TODO tell main process to save to file
     // tslint:disable-next-line:no-console
     console.log('save to file...');
-    return await this.sendMsgToMain<boolean>('save', tasks);
+    return await this.sendMsgToMain<boolean>(IpcActions.SAVE, tasks);
   }
 
   private async readFromFile(): Promise<Task[]> {
     // TODO tell main process to read from file
     // tslint:disable-next-line:no-console
     console.log('read from file...');
-    return await this.sendMsgToMain<Task[]>('read');
+    return await this.sendMsgToMain<Task[]>(IpcActions.READ);
   }
 
   // tslint:disable-next-line:no-any

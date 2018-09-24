@@ -11,3 +11,8 @@ export type IpcResponseError = {
 };
 
 export type IpcResponse = IpcResponseSuccess | IpcResponseError;
+
+export enum IpcActions {
+  READ = 'read',
+  SAVE = 'save'
+}

@@ -9,6 +9,7 @@ import * as net from 'net';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 import ErrorCode from '../common/ErrorCode';
+import { IpcActions } from '../common/Ipc';
 import Task from '../common/Task';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -109,7 +110,7 @@ function initIpc() {
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir);
   }
-  ipcMain.on('save', (event: Electron.Event, args: Task[]) => {
+  ipcMain.on(IpcActions.SAVE, (event: Electron.Event, args: Task[]) => {
     // tslint:disable-next-line:no-console
     console.log('main process save...');
     fs.writeFile(savePath, JSON.stringify(args), err => {
@@ -118,12 +119,12 @@ function initIpc() {
       if (err) {
         // tslint:disable-next-line:no-console
         console.log(err);
-        event.sender.send('save', {
+        event.sender.send(IpcActions.SAVE, {
           code: ErrorCode.FILE_SAVE_ERROR,
           error: err
         });
       } else {
-        event.sender.send('save', {
+        event.sender.send(IpcActions.SAVE, {
           code: ErrorCode.SUCCESS,
           data: null
         });
@@ -131,17 +132,17 @@ function initIpc() {
     });
   });
 
-  ipcMain.on('read', (event: Electron.Event) => {
+  ipcMain.on(IpcActions.READ, (event: Electron.Event) => {
     // tslint:disable-next-line:no-console
     console.log('main process read...');
     fs.readFile(savePath, (err, data) => {
       if (err) {
-        event.sender.send('read', {
+        event.sender.send(IpcActions.READ, {
           code: ErrorCode.FILE_READ_ERROR,
           error: err
         });
       } else {
-        event.sender.send('read', {
+        event.sender.send(IpcActions.READ, {
           code: ErrorCode.SUCCESS,
           data: JSON.parse(data.toString()) as Task[]
         });
