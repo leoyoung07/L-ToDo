@@ -1,6 +1,6 @@
 import { Breadcrumb, Button, Icon, Layout } from 'antd';
 import { ipcRenderer } from 'electron';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -19,13 +19,23 @@ import { DeepClone } from './Util';
 
 const { Content } = Layout;
 
-function getDaysOfWeek() {
+function getDaysOfWeek(now: Moment) {
   const days = [];
   for (let index = 1; index <= 7; index++) {
-    const day = moment().isoWeekday(index);
+    const day = now.isoWeekday(index);
     days.push(day.format('YYYY-MM-DD'));
   }
   return days;
+}
+
+function getSideBarDays(date: Moment = moment()) {
+  const days = getDaysOfWeek(date);
+  return days.map(day => {
+    return {
+      text: day,
+      value: day
+    };
+  });
 }
 
 interface IMainProps {}
@@ -45,15 +55,9 @@ interface IMainState {
 class Main extends React.Component<IMainProps, IMainState> {
   constructor(props: IMainProps) {
     super(props);
-    const days = getDaysOfWeek();
     this.state = {
       siderCollapsed: true,
-      sideBarItems: days.map(day => {
-        return {
-          text: day,
-          value: day
-        };
-      }),
+      sideBarItems: getSideBarDays(),
       drawerVisible: false,
       tasks: [],
       date: moment().format('YYYY-MM-DD'),
@@ -69,6 +73,7 @@ class Main extends React.Component<IMainProps, IMainState> {
     this.handleSideBarItemClick = this.handleSideBarItemClick.bind(this);
     this.handleEditBtnClick = this.handleEditBtnClick.bind(this);
     this.handleSaveTaskBtnClick = this.handleSaveTaskBtnClick.bind(this);
+    this.handleWeekChange = this.handleWeekChange.bind(this);
 
     (async () => {
       const tasks = await this.readFromFile();
@@ -84,8 +89,9 @@ class Main extends React.Component<IMainProps, IMainState> {
           <SideBar
             collapsed={this.state.siderCollapsed}
             items={this.state.sideBarItems}
-            handleItemClick={this.handleSideBarItemClick}
             current={this.state.date}
+            handleItemClick={this.handleSideBarItemClick}
+            handleWeekChange={this.handleWeekChange}
           />
           <Layout style={{ padding: '0 24px 24px' }}>
             <div className="main__header">
@@ -173,6 +179,13 @@ class Main extends React.Component<IMainProps, IMainState> {
   private handleSideBarItemClick(key: string) {
     this.setState({
       date: key
+    });
+  }
+
+  private handleWeekChange(date: Moment, dateString: string) {
+    this.setState({
+      date: date.format('YYYY-MM-DD'),
+      sideBarItems: getSideBarDays(date)
     });
   }
 

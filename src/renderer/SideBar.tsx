@@ -1,4 +1,5 @@
-import { Layout, Menu } from 'antd';
+import { DatePicker, Layout, Menu } from 'antd';
+import moment, { Moment } from 'moment';
 import React from 'react';
 
 const { Sider } = Layout;
@@ -13,6 +14,7 @@ interface ISideBarProps {
   items: ISideBarItem[];
   current: string;
   handleItemClick(key: string): void;
+  handleWeekChange(date: Moment, dateString: string): void;
 }
 
 class SideBar extends React.Component<ISideBarProps> {
@@ -26,22 +28,19 @@ class SideBar extends React.Component<ISideBarProps> {
         width={130}
         style={{ background: '#fff' }}
       >
+        <div>
+          <DatePicker.WeekPicker value={moment(this.props.current)} onChange={this.props.handleWeekChange}/>
+        </div>
         <Menu
           mode="inline"
           selectedKeys={[this.props.current]}
           style={{ height: '100%', borderRight: 0 }}
-          onClick={(e) => {
+          onClick={e => {
             this.props.handleItemClick(e.key);
           }}
         >
           {this.props.items.map(item => {
-            return (
-              <Menu.Item
-                key={item.value}
-              >
-                {item.text}
-              </Menu.Item>
-            );
+            return <Menu.Item key={item.value}>{item.text}</Menu.Item>;
           })}
         </Menu>
       </Sider>
