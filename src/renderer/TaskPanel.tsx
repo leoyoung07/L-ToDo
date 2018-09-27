@@ -16,9 +16,6 @@ interface ITaskPanelState {
 class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
   constructor(props: ITaskPanelProps) {
     super(props);
-    this.state = {
-      tasks: [],
-    };
   }
   render() {
     return (
