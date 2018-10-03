@@ -74,14 +74,17 @@ class Main extends React.Component<IMainProps, IMainState> {
     this.handleEditBtnClick = this.handleEditBtnClick.bind(this);
     this.handleSaveTaskBtnClick = this.handleSaveTaskBtnClick.bind(this);
     this.handleWeekChange = this.handleWeekChange.bind(this);
+  }
 
+  componentDidMount() {
     (async () => {
-      const tasks = await this.readFromFile();
+      const tasks = await this.readTasks();
       this.setState({
         tasks
       });
     })();
   }
+
   render() {
     return (
       <Layout>
@@ -215,6 +218,12 @@ class Main extends React.Component<IMainProps, IMainState> {
     return await this.sendMsgToMain<null>(IpcActions.SAVE, tasks);
   }
 
+  private async readTasks(): Promise<Task[]> {
+    const tasks = await this.downloadFromServer();
+    await this.saveToFile(tasks);
+    return await this.readFromFile();
+  }
+
   private async readFromFile(): Promise<Task[]> {
     // tslint:disable-next-line:no-console
     console.log('read from file...');
@@ -225,6 +234,12 @@ class Main extends React.Component<IMainProps, IMainState> {
     // tslint:disable-next-line:no-console
     console.log('upload to server...');
     return await this.sendMsgToMain<null>(IpcActions.SERVER_UPLOAD);
+  }
+
+  private async downloadFromServer() {
+    // tslint:disable-next-line:no-console
+    console.log('download from server...');
+    return await this.sendMsgToMain<Task[]>(IpcActions.SERVER_DOWNLOAD);
   }
 
   private sendMsgToMain<T>(

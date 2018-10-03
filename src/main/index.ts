@@ -163,12 +163,18 @@ function initIpc() {
         });
       } else {
         if (socket) {
-          socket.write(data.toString(), () => {
-            event.sender.send(IpcActions.SERVER_UPLOAD, {
-              code: ErrorCode.SUCCESS,
-              data: null
-            });
-          });
+          socket.write(
+            JSON.stringify({
+              type: 'upload',
+              data: data
+            }),
+            () => {
+              event.sender.send(IpcActions.SERVER_UPLOAD, {
+                code: ErrorCode.SUCCESS,
+                data: null
+              });
+            }
+          );
         } else {
           event.sender.send(IpcActions.SERVER_UPLOAD, {
             code: ErrorCode.SERVER_UPLOAD_ERROR,
@@ -177,6 +183,24 @@ function initIpc() {
         }
       }
     });
+  });
+
+  ipcMain.on(IpcActions.SERVER_DOWNLOAD, (event: Electron.Event) => {
+    // tslint:disable-next-line:no-console
+    console.log('main process download...');
+    if (socket) {
+      socket.write(
+        JSON.stringify({
+          type: 'download',
+          data: null
+        })
+      );
+    } else {
+      event.sender.send(IpcActions.SERVER_DOWNLOAD, {
+        code: ErrorCode.SERVER_DOWNLOAD_ERROR,
+        error: new Error('socket not initialized')
+      });
+    }
   });
 }
 
@@ -187,13 +211,32 @@ function initSocket() {
     () => {
       // tslint:disable-next-line:no-console
       console.log('server connected...');
-      sock.write('hello, server\n');
+      sock.write(JSON.stringify({
+        type: 'ping',
+        data: 'ping'
+      }));
     }
   );
 
   sock.on('data', data => {
+    const resStr = data.toString();
     // tslint:disable-next-line:no-console
-    console.log(data.toString());
+    console.log(resStr);
+    const response = JSON.parse(resStr);
+    switch (response.type) {
+      case 'download':
+        mainWindow!.webContents.send(IpcActions.SERVER_DOWNLOAD, {
+          code: ErrorCode.SUCCESS,
+          data: JSON.parse(response.data) as Task[]
+        });
+        break;
+      case 'upload':
+        break;
+      case 'pong':
+        break;
+      default:
+        break;
+    }
   });
 
   sock.on('error', err => {
