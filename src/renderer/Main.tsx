@@ -220,7 +220,9 @@ class Main extends React.Component<IMainProps, IMainState> {
 
   private async readTasks(): Promise<Task[]> {
     const tasks = await this.downloadFromServer();
-    await this.saveToFile(tasks);
+    if (tasks) {
+      await this.saveToFile(tasks);
+    }
     return await this.readFromFile();
   }
 

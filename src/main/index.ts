@@ -137,6 +137,9 @@ function initIpc() {
   ipcMain.on(IpcActions.READ, (event: Electron.Event) => {
     // tslint:disable-next-line:no-console
     console.log('main process read...');
+    if (!fs.existsSync(savePath)) {
+      fs.writeFileSync(savePath, '[]');
+    }
     fs.readFile(savePath, (err, data) => {
       if (err) {
         event.sender.send(IpcActions.READ, {
@@ -166,7 +169,7 @@ function initIpc() {
           socket.write(
             JSON.stringify({
               type: 'upload',
-              data: data
+              data: data.toString()
             }),
             () => {
               event.sender.send(IpcActions.SERVER_UPLOAD, {
