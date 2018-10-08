@@ -16,5 +16,6 @@ export enum IpcActions {
   READ = 'read',
   SAVE = 'save',
   SERVER_UPLOAD = 'server_upload',
-  SERVER_DOWNLOAD = 'server_download'
+  SERVER_DOWNLOAD = 'server_download',
+  UPDATE = 'update'
 }

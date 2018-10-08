@@ -109,6 +109,8 @@ async function installDevExtension(extension: ExtensionReference) {
 function initIpc() {
   const dataDir = path.join(app.getPath('appData'), 'l_todo');
   const savePath = path.join(dataDir, 'todos.json');
+  // tslint:disable-next-line:no-console
+  console.log(savePath);
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir);
   }
@@ -214,10 +216,12 @@ function initSocket() {
     () => {
       // tslint:disable-next-line:no-console
       console.log('server connected...');
-      sock.write(JSON.stringify({
-        type: 'ping',
-        data: 'ping'
-      }));
+      sock.write(
+        JSON.stringify({
+          type: 'ping',
+          data: 'ping'
+        })
+      );
     }
   );
 
@@ -234,6 +238,12 @@ function initSocket() {
         });
         break;
       case 'upload':
+        break;
+      case 'update':
+        mainWindow!.webContents.send(IpcActions.UPDATE, {
+          code: ErrorCode.SUCCESS,
+          data: null
+        });
         break;
       case 'pong':
         break;

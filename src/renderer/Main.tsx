@@ -77,11 +77,16 @@ class Main extends React.Component<IMainProps, IMainState> {
   }
 
   componentDidMount() {
+    ipcRenderer.on(IpcActions.UPDATE, async (event: Electron.Event, res: IpcResponse) => {
+      if (res.code === ErrorCode.SUCCESS) {
+        res = res as IpcResponseSuccess;
+        await this.updateTasks();
+      } else {
+        throw (res as IpcResponseError).error;
+      }
+    });
     (async () => {
-      const tasks = await this.readTasks();
-      this.setState({
-        tasks
-      });
+      await this.updateTasks();
     })();
   }
 
@@ -244,6 +249,13 @@ class Main extends React.Component<IMainProps, IMainState> {
     return await this.sendMsgToMain<Task[]>(IpcActions.SERVER_DOWNLOAD);
   }
 
+  private async updateTasks() {
+    const tasks = await this.readTasks();
+    this.setState({
+      tasks
+    });
+  }
+
   private sendMsgToMain<T>(
     channel: string,
     // tslint:disable-next-line:no-any
@@ -252,7 +264,7 @@ class Main extends React.Component<IMainProps, IMainState> {
   ) {
     return new Promise<T>((resolve, reject) => {
       // tslint:disable-next-line:no-any
-      ipcRenderer.on(channel, (event: Electron.Event, res: IpcResponse) => {
+      ipcRenderer.once(channel, (event: Electron.Event, res: IpcResponse) => {
         if (res.code === ErrorCode.SUCCESS) {
           res = res as IpcResponseSuccess;
           resolve(res.data as T);
