@@ -21,6 +21,44 @@ let mainWindow: BrowserWindow | null = null;
 
 let socket: net.Socket | null = null;
 
+// single instance
+const shouldQuit = app.makeSingleInstance(function(
+  commandLine: string[],
+  workingDirectory: string
+) {
+  // Someone tried to run a second instance, we should focus our window.
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore();
+    }
+    mainWindow.focus();
+  }
+});
+
+if (shouldQuit) {
+  app.quit();
+} else {
+  // quit application when all windows are closed
+  app.on('window-all-closed', () => {
+    // on macOS it is common for applications to stay open until the user explicitly quits
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+
+  app.on('activate', () => {
+    // on macOS it is common to re-create a window even after all windows have been closed
+    if (mainWindow === null) {
+      mainWindow = createMainWindow();
+    }
+  });
+
+  // create main BrowserWindow when electron is ready
+  app.on('ready', () => {
+    mainWindow = createMainWindow();
+  });
+}
+
 function createMainWindow() {
   const window = new BrowserWindow({
     webPreferences: {
@@ -74,26 +112,6 @@ function createMainWindow() {
 
   return window;
 }
-
-// quit application when all windows are closed
-app.on('window-all-closed', () => {
-  // on macOS it is common for applications to stay open until the user explicitly quits
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  // on macOS it is common to re-create a window even after all windows have been closed
-  if (mainWindow === null) {
-    mainWindow = createMainWindow();
-  }
-});
-
-// create main BrowserWindow when electron is ready
-app.on('ready', () => {
-  mainWindow = createMainWindow();
-});
 
 async function installDevExtension(extension: ExtensionReference) {
   try {
