@@ -7,6 +7,7 @@ import installExtension, {
 import * as fs from 'fs';
 import * as net from 'net';
 import * as path from 'path';
+import { Writable } from 'stream';
 import { format as formatUrl } from 'url';
 import ErrorCode from '../common/ErrorCode';
 import { IpcActions } from '../common/Ipc';
@@ -186,7 +187,8 @@ function initIpc() {
         });
       } else {
         if (socket) {
-          socket.write(
+          writeToStream(
+            socket,
             JSON.stringify({
               type: 'upload',
               data: data.toString()
@@ -212,7 +214,8 @@ function initIpc() {
     // tslint:disable-next-line:no-console
     console.log('main process download...');
     if (socket) {
-      socket.write(
+      writeToStream(
+        socket,
         JSON.stringify({
           type: 'download',
           data: null
@@ -234,7 +237,8 @@ function initSocket() {
     () => {
       // tslint:disable-next-line:no-console
       console.log('server connected...');
-      sock.write(
+      writeToStream(
+        sock,
         JSON.stringify({
           type: 'ping',
           data: 'ping'
@@ -281,4 +285,15 @@ function initSocket() {
   });
 
   return sock;
+}
+
+function writeToStream(stream: Writable, content: string, callback?: () => void) {
+  const finished = stream.write(content + '\n');
+  if (callback) {
+    if (!finished) {
+      stream.once('drain', callback);
+    } else {
+      process.nextTick(callback);
+    }
+  }
 }
