@@ -7,11 +7,11 @@ import installExtension, {
 import * as fs from 'fs';
 import * as net from 'net';
 import * as path from 'path';
-import { Writable } from 'stream';
 import { format as formatUrl } from 'url';
 import ErrorCode from '../common/ErrorCode';
 import { IpcActions } from '../common/Ipc';
 import Task from '../common/Task';
+import SocketHelper from './SocketHelper';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -20,7 +20,7 @@ const isDebug = !!process.env.DEBUG;
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow: BrowserWindow | null = null;
 
-let socket: net.Socket | null = null;
+let socketHelper: SocketHelper | null = null;
 
 // single instance
 const shouldQuit = app.makeSingleInstance(function(
@@ -109,7 +109,7 @@ function createMainWindow() {
 
   initIpc();
 
-  socket = initSocket();
+  socketHelper = initSocket();
 
   return window;
 }
@@ -186,9 +186,9 @@ function initIpc() {
           error: err
         });
       } else {
-        if (socket) {
-          writeToStream(
-            socket,
+        if (socketHelper) {
+          writeToSocket(
+            socketHelper,
             JSON.stringify({
               type: 'upload',
               data: data.toString()
@@ -213,9 +213,9 @@ function initIpc() {
   ipcMain.on(IpcActions.SERVER_DOWNLOAD, (event: Electron.Event) => {
     // tslint:disable-next-line:no-console
     console.log('main process download...');
-    if (socket) {
-      writeToStream(
-        socket,
+    if (socketHelper) {
+      writeToSocket(
+        socketHelper,
         JSON.stringify({
           type: 'download',
           data: null
@@ -233,21 +233,24 @@ function initIpc() {
 function initSocket() {
   const sock = net.connect(
     7269,
-    '123.206.255.153',
-    () => {
-      // tslint:disable-next-line:no-console
-      console.log('server connected...');
-      writeToStream(
-        sock,
-        JSON.stringify({
-          type: 'ping',
-          data: 'ping'
-        })
-      );
-    }
+    '123.206.255.153'
   );
 
-  sock.on('data', data => {
+  const helper = new SocketHelper(sock);
+
+  sock.on('connect', () => {
+    // tslint:disable-next-line:no-console
+    console.log('server connected...');
+    writeToSocket(
+      helper,
+      JSON.stringify({
+        type: 'ping',
+        data: 'ping'
+      })
+    );
+  });
+
+  helper.on('data', data => {
     const resStr = data.toString();
     // tslint:disable-next-line:no-console
     console.log(resStr);
@@ -284,16 +287,13 @@ function initSocket() {
     console.log('disconnected from server...');
   });
 
-  return sock;
+  return helper;
 }
 
-function writeToStream(stream: Writable, content: string, callback?: () => void) {
-  const finished = stream.write(content + '\n');
-  if (callback) {
-    if (!finished) {
-      stream.once('drain', callback);
-    } else {
-      process.nextTick(callback);
-    }
-  }
+function writeToSocket(
+  helper: SocketHelper,
+  content: string,
+  callback?: () => void
+) {
+  helper.writeData(Buffer.from(content + '\n'), callback);
 }
