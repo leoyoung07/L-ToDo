@@ -14,12 +14,12 @@ export default class SocketHelper extends EventEmitter {
   private readonly headLength = 4;
 
   private bodyLength: number;
-  constructor(private socket: net.Socket) {
+  constructor(public socket: net.Socket) {
     super();
     this.buffer = Buffer.alloc(0);
     this.state = BufferReadState.HEAD;
     this.bodyLength = 0;
-    this.socket.on('data', this.onData);
+    this.socket.on('data', this.onData.bind(this));
   }
   public writeData(data: Buffer, callback?: () => void) {
     if (data && data.length > 0) {
