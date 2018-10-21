@@ -8,6 +8,7 @@ interface ITaskPanelProps {
   handleAddBtnClick(): void;
   handleTaskStateChange(id: string, state: TaskState): void;
   handleEditBtnClick(task: Task): void;
+  handleDeleteBtnClick(task: Task): void;
 }
 interface ITaskPanelState {
 
@@ -45,6 +46,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                 tasks={this.props.tasks}
                 handleTaskStateChange={this.props.handleTaskStateChange}
                 handleEditBtnClick={this.props.handleEditBtnClick}
+                handleDeleteBtnClick={this.props.handleDeleteBtnClick}
               />
             </div>
           </Col>
@@ -59,6 +61,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                 tasks={this.props.tasks}
                 handleEditBtnClick={this.props.handleEditBtnClick}
                 handleTaskStateChange={this.props.handleTaskStateChange}
+                handleDeleteBtnClick={this.props.handleDeleteBtnClick}
               />
             </div>
           </Col>
@@ -73,6 +76,7 @@ class TaskPanel extends React.Component<ITaskPanelProps, ITaskPanelState> {
                 tasks={this.props.tasks}
                 handleEditBtnClick={this.props.handleEditBtnClick}
                 handleTaskStateChange={this.props.handleTaskStateChange}
+                handleDeleteBtnClick={this.props.handleDeleteBtnClick}
               />
             </div>
           </Col>

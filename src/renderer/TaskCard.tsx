@@ -15,6 +15,7 @@ interface ITaskCardProps {
 
   handleTaskStateChange(taskId: string, newState: TaskState): void;
   handleEditBtnClick(task: Task): void;
+  handleDeleteBtnClick(task: Task): void;
 }
 
 interface ITaskCardState {}
@@ -63,15 +64,24 @@ class TaskCard extends React.Component<ITaskCardProps, ITaskCardState> {
               className="task-card"
               title={cardTitle}
               extra={
-                <a
-                  href="#"
-                  onClick={() => {
-                    this.props.handleEditBtnClick(this.props.task);
-                  }}
-                >
-                  <Icon type="edit" style={{ marginRight: '5px' }} />
-                  Edit
-                </a>
+                <span>
+                  <a
+                    href="#"
+                    onClick={() => {
+                      this.props.handleEditBtnClick(this.props.task);
+                    }}
+                  >
+                    <Icon type="edit" style={{ marginRight: '8px' }} />
+                  </a>
+                  <a
+                    href="#"
+                    onClick={() => {
+                      this.props.handleDeleteBtnClick(this.props.task);
+                    }}
+                  >
+                    <Icon type="delete"/>
+                  </a>
+                </span>
               }
               hoverable={true}
             >

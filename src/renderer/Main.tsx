@@ -72,6 +72,7 @@ class Main extends React.Component<IMainProps, IMainState> {
     this.handleTaskStateChange = this.handleTaskStateChange.bind(this);
     this.handleSideBarItemClick = this.handleSideBarItemClick.bind(this);
     this.handleEditBtnClick = this.handleEditBtnClick.bind(this);
+    this.handleDeleteBtnClick = this.handleDeleteBtnClick.bind(this);
     this.handleSaveTaskBtnClick = this.handleSaveTaskBtnClick.bind(this);
     this.handleWeekChange = this.handleWeekChange.bind(this);
   }
@@ -122,6 +123,7 @@ class Main extends React.Component<IMainProps, IMainState> {
                 )}
                 handleAddBtnClick={this.handleAddBtnClick}
                 handleEditBtnClick={this.handleEditBtnClick}
+                handleDeleteBtnClick={this.handleDeleteBtnClick}
                 handleTaskStateChange={this.handleTaskStateChange}
               />
             </Content>
@@ -210,6 +212,18 @@ class Main extends React.Component<IMainProps, IMainState> {
       drawerVisible: true,
       isNewMode: false
     });
+  }
+
+  private async handleDeleteBtnClick(task: Task) {
+    const tasks = DeepClone(this.state.tasks);
+    const index = tasks.findIndex(t => t.Id === task.Id);
+    if (index >= 0) {
+      tasks.splice(index, 1);
+      this.setState({
+        tasks: tasks
+      });
+      await this.saveTasks(tasks);
+    }
   }
 
   private async saveTasks(tasks: Task[]) {
