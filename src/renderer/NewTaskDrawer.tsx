@@ -1,7 +1,8 @@
-import { Button, Col, DatePicker, Drawer, Form, Input, Row } from 'antd';
+import { Button, Col, DatePicker, Drawer, Form, Input, Radio, Row } from 'antd';
+import { RadioChangeEvent } from 'antd/lib/radio';
 import moment, { Moment } from 'moment';
 import React from 'react';
-import Task from '../common/Task';
+import Task, { TaskPriority } from '../common/Task';
 
 interface INewTaskDrawerStatus {
   draftTask: Task;
@@ -29,6 +30,7 @@ class NewTaskDrawer extends React.Component<
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
     this.handleDueDateChange = this.handleDueDateChange.bind(this);
+    this.handlePriorityChange = this.handlePriorityChange.bind(this);
   }
   render() {
     const BottomButtons = () => {
@@ -47,9 +49,7 @@ class NewTaskDrawer extends React.Component<
         return (
           <Button
             onClick={() => {
-              this.props.handleSaveTaskBtnClick(
-                this.state.draftTask
-              );
+              this.props.handleSaveTaskBtnClick(this.state.draftTask);
             }}
             type="primary"
           >
@@ -106,6 +106,28 @@ class NewTaskDrawer extends React.Component<
               </Form.Item>
             </Col>
           </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item label="Priority">
+                <Radio.Group
+                  value={this.state.draftTask.Priority}
+                  defaultValue={TaskPriority.MIDDLE}
+                  buttonStyle="solid"
+                  onChange={this.handlePriorityChange}
+                >
+                  <Radio.Button value={TaskPriority.HIGH}>
+                    {TaskPriority.HIGH}
+                  </Radio.Button>
+                  <Radio.Button value={TaskPriority.MIDDLE}>
+                    {TaskPriority.MIDDLE}
+                  </Radio.Button>
+                  <Radio.Button value={TaskPriority.LOW}>
+                    {TaskPriority.LOW}
+                  </Radio.Button>
+                </Radio.Group>
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
         <div className="new-task-drawer__footer">
           <BottomButtons />
@@ -133,6 +155,16 @@ class NewTaskDrawer extends React.Component<
   private handleDueDateChange(date: Moment) {
     const draftTask = { ...this.state.draftTask };
     draftTask.DueDate = date.format('YYYY-MM-DD');
+    this.setState({
+      draftTask
+    });
+  }
+
+  private handlePriorityChange(e: RadioChangeEvent) {
+    const draftTask = { ...this.state.draftTask };
+    draftTask.Priority = e.target.value
+      ? (e.target.value as TaskPriority)
+      : draftTask.Priority;
     this.setState({
       draftTask
     });

@@ -5,6 +5,12 @@ export enum TaskState {
   DOING = 'DOING',
   DONE = 'DONE'
 }
+
+export enum TaskPriority {
+  HIGH = 'HIGH',
+  MIDDLE = 'MIDDLE',
+  LOW = 'LOW'
+}
 export default class Task {
   public readonly Id: string;
 
@@ -18,11 +24,19 @@ export default class Task {
 
   public Content: string;
 
-  constructor(title?: string, dueDate?: string, content?: string) {
-    const now = (new Date()).getTime();
+  public Priority: TaskPriority;
+
+  constructor(
+    title?: string,
+    dueDate?: string,
+    content?: string,
+    priority?: TaskPriority
+  ) {
+    const now = new Date().getTime();
     this.Title = title ? title : '';
     this.DueDate = dueDate ? dueDate : moment().format('YYYY-MM-DD');
     this.Content = content ? content : '';
+    this.Priority = priority ? priority : TaskPriority.MIDDLE;
     this.CreateTime = now;
     this.Id = now.toString();
     this.State = TaskState.TODO;
