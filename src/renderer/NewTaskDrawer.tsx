@@ -205,6 +205,9 @@ class NewTaskDrawer extends React.Component<
   private handleDueTimeBeginChange(time: Moment) {
     const draftTask = { ...this.state.draftTask };
     draftTask.DueTimeBegin = time.format('HH:mm:ss');
+    if (!draftTask.DueTimeEnd || draftTask.DueTimeBegin > draftTask.DueTimeEnd) {
+      draftTask.DueTimeEnd = draftTask.DueTimeBegin;
+    }
     this.setState({
       draftTask
     });
@@ -213,6 +216,9 @@ class NewTaskDrawer extends React.Component<
   private handleDueTimeEndChange(time: Moment) {
     const draftTask = { ...this.state.draftTask };
     draftTask.DueTimeEnd = time.format('HH:mm:ss');
+    if (!draftTask.DueTimeBegin || draftTask.DueTimeBegin > draftTask.DueTimeEnd) {
+      draftTask.DueTimeBegin = draftTask.DueTimeEnd;
+    }
     this.setState({
       draftTask
     });

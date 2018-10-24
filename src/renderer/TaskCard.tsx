@@ -93,7 +93,12 @@ class TaskCard extends React.Component<ITaskCardProps, ITaskCardState> {
         </div>
         <div>
           {this.props.task.Priority ? (
-            <Tag color={mapPriorityColor(this.props.task.Priority)}>
+            <Tag
+              color={mapPriorityColor(this.props.task.Priority)}
+              onClick={() => {
+                this.props.handleEditBtnClick(this.props.task);
+              }}
+            >
               {this.props.task.Priority}
             </Tag>
           ) : null}
