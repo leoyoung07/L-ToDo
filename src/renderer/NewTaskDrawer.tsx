@@ -1,4 +1,14 @@
-import { Button, Col, DatePicker, Drawer, Form, Input, Radio, Row } from 'antd';
+import {
+  Button,
+  Col,
+  DatePicker,
+  Drawer,
+  Form,
+  Input,
+  Radio,
+  Row,
+  TimePicker
+} from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import moment, { Moment } from 'moment';
 import React from 'react';
@@ -31,6 +41,8 @@ class NewTaskDrawer extends React.Component<
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
     this.handleDueDateChange = this.handleDueDateChange.bind(this);
     this.handlePriorityChange = this.handlePriorityChange.bind(this);
+    this.handleDueTimeBeginChange = this.handleDueTimeBeginChange.bind(this);
+    this.handleDueTimeEndChange = this.handleDueTimeEndChange.bind(this);
   }
   render() {
     const BottomButtons = () => {
@@ -90,6 +102,36 @@ class NewTaskDrawer extends React.Component<
                   style={{ width: '100%' }}
                   placeholder="Task deadline"
                   onChange={this.handleDueDateChange}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Begin Time">
+                <TimePicker
+                  value={
+                    this.props.draftTask.DueTimeBegin
+                      ? moment(this.state.draftTask.DueTimeBegin, 'HH:mm:ss')
+                      : moment('00:00:00', 'HH:mm:ss')
+                  }
+                  style={{ width: '100%' }}
+                  placeholder="Task Begin Time"
+                  onChange={this.handleDueTimeBeginChange}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="End Time">
+                <TimePicker
+                  value={
+                    this.props.draftTask.DueTimeEnd
+                      ? moment(this.state.draftTask.DueTimeEnd, 'HH:mm:ss')
+                      : moment('23:59:59', 'HH:mm:ss')
+                  }
+                  style={{ width: '100%' }}
+                  placeholder="Task End Time"
+                  onChange={this.handleDueTimeEndChange}
                 />
               </Form.Item>
             </Col>
@@ -155,6 +197,22 @@ class NewTaskDrawer extends React.Component<
   private handleDueDateChange(date: Moment) {
     const draftTask = { ...this.state.draftTask };
     draftTask.DueDate = date.format('YYYY-MM-DD');
+    this.setState({
+      draftTask
+    });
+  }
+
+  private handleDueTimeBeginChange(time: Moment) {
+    const draftTask = { ...this.state.draftTask };
+    draftTask.DueTimeBegin = time.format('HH:mm:ss');
+    this.setState({
+      draftTask
+    });
+  }
+
+  private handleDueTimeEndChange(time: Moment) {
+    const draftTask = { ...this.state.draftTask };
+    draftTask.DueTimeEnd = time.format('HH:mm:ss');
     this.setState({
       draftTask
     });

@@ -22,6 +22,10 @@ export default class Task {
 
   public DueDate: string;
 
+  public DueTimeBegin: string;
+
+  public DueTimeEnd: string;
+
   public Content: string;
 
   public Priority: TaskPriority;
@@ -29,12 +33,16 @@ export default class Task {
   constructor(
     title?: string,
     dueDate?: string,
+    dueTimeBegin?: string,
+    dueTimeEnd?: string,
     content?: string,
     priority?: TaskPriority
   ) {
     const now = new Date().getTime();
     this.Title = title ? title : '';
     this.DueDate = dueDate ? dueDate : moment().format('YYYY-MM-DD');
+    this.DueTimeBegin = dueTimeBegin ? dueTimeBegin : '00:00:00';
+    this.DueTimeEnd = dueTimeEnd ? dueTimeEnd : '23:59:59';
     this.Content = content ? content : '';
     this.Priority = priority ? priority : TaskPriority.MIDDLE;
     this.CreateTime = now;
