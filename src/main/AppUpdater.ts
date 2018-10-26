@@ -1,8 +1,13 @@
-import { log } from 'electron-log';
+import Logger from 'electron-log';
 import { autoUpdater } from 'electron-updater';
 
 export class AppUpdater {
   constructor() {
-    // TODO init autoUpdater
+    Logger.transports.file.level = 'debug';
+    autoUpdater.logger = Logger;
+  }
+
+  public checkAndNotify() {
+    autoUpdater.checkForUpdatesAndNotify();
   }
 }
