@@ -1,4 +1,4 @@
-import { DatePicker, Layout, Menu } from 'antd';
+import { Badge, DatePicker, Layout, Menu } from 'antd';
 import moment, { Moment } from 'moment';
 import React from 'react';
 
@@ -26,11 +26,14 @@ class SideBar extends React.Component<ISideBarProps> {
         collapsedWidth={0}
         trigger={null}
         collapsed={this.props.collapsed}
-        width={130}
+        width={150}
         style={{ background: '#fff' }}
       >
         <div>
-          <DatePicker.WeekPicker value={moment(this.props.current)} onChange={this.props.handleWeekChange}/>
+          <DatePicker.WeekPicker
+            value={moment(this.props.current)}
+            onChange={this.props.handleWeekChange}
+          />
         </div>
         <Menu
           mode="inline"
@@ -40,9 +43,12 @@ class SideBar extends React.Component<ISideBarProps> {
             this.props.handleItemClick(e.key);
           }}
         >
-          {this.props.items.map(item => {
-            return <Menu.Item key={item.value}>{item.text}</Menu.Item>;
-          })}
+          {this.props.items.map(item => (
+            <Menu.Item key={item.value}>
+              <span>{item.text}</span>
+              <Badge style={{margin: '0 8px'}} count={item.badgeValue} />
+            </Menu.Item>
+          ))}
         </Menu>
       </Sider>
     );

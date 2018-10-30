@@ -82,7 +82,7 @@ class NewTaskDrawer extends React.Component<
           overflow: 'auto'
         }}
       >
-        <Form layout="vertical" hideRequiredMark={true}>
+        <Form className="new-task-drawer__form" layout="vertical" hideRequiredMark={true}>
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item label="Title">

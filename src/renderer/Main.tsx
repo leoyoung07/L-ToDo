@@ -28,14 +28,21 @@ function getDaysOfWeek(now: Moment) {
   return days;
 }
 
-function getSideBarDays(tasks: Task[], date: Moment = moment()): ISideBarItem[] {
+function getSideBarDays(
+  tasks: Task[],
+  date: Moment = moment()
+): ISideBarItem[] {
   const days = getDaysOfWeek(date);
   return days.map(day => {
+    const toDosOfDay = tasks.reduce((totalToDos, currentTask) => {
+      return currentTask.DueDate === day && currentTask.State === TaskState.TODO
+        ? totalToDos + 1
+        : totalToDos;
+    }, 0);
     return {
       text: day,
       value: day,
-      // TODO calculate badge value
-      badgeValue: 0
+      badgeValue: toDosOfDay
     };
   });
 }
@@ -81,14 +88,17 @@ class Main extends React.Component<IMainProps, IMainState> {
   }
 
   componentDidMount() {
-    ipcRenderer.on(IpcActions.UPDATE, async (event: Electron.Event, res: IpcResponse) => {
-      if (res.code === ErrorCode.SUCCESS) {
-        res = res as IpcResponseSuccess;
-        await this.updateTasks();
-      } else {
-        throw (res as IpcResponseError).error;
+    ipcRenderer.on(
+      IpcActions.UPDATE,
+      async (event: Electron.Event, res: IpcResponse) => {
+        if (res.code === ErrorCode.SUCCESS) {
+          res = res as IpcResponseSuccess;
+          await this.updateTasks();
+        } else {
+          throw (res as IpcResponseError).error;
+        }
       }
-    });
+    );
     (async () => {
       await this.updateTasks();
     })();
@@ -158,9 +168,7 @@ class Main extends React.Component<IMainProps, IMainState> {
   private async handleCreateTaskBtnClick(newTask: Task) {
     const tasks = DeepClone(this.state.tasks);
     tasks.push(newTask);
-    this.setState({
-      tasks: tasks
-    });
+    this.setTasksState(tasks);
     this.handleDrawerClose();
     await this.saveTasks(tasks);
   }
@@ -170,9 +178,7 @@ class Main extends React.Component<IMainProps, IMainState> {
     const index = tasks.findIndex(t => t.Id === draftTask.Id);
     if (index >= 0) {
       tasks[index] = draftTask;
-      this.setState({
-        tasks: tasks
-      });
+      this.setTasksState(tasks);
       await this.saveTasks(tasks);
     }
     this.handleDrawerClose();
@@ -182,9 +188,7 @@ class Main extends React.Component<IMainProps, IMainState> {
     const currentTask = tasks.find(t => t.Id === id);
     if (currentTask) {
       currentTask.State = state;
-      this.setState({
-        tasks: tasks
-      });
+      this.setTasksState(tasks);
       await this.saveTasks(tasks);
     }
   }
@@ -222,9 +226,7 @@ class Main extends React.Component<IMainProps, IMainState> {
     const index = tasks.findIndex(t => t.Id === task.Id);
     if (index >= 0) {
       tasks.splice(index, 1);
-      this.setState({
-        tasks: tasks
-      });
+      this.setTasksState(tasks);
       await this.saveTasks(tasks);
     }
   }
@@ -268,9 +270,17 @@ class Main extends React.Component<IMainProps, IMainState> {
 
   private async updateTasks() {
     const tasks = await this.readTasks();
-    this.setState({
-      tasks
-    });
+    this.setTasksState(tasks);
+  }
+
+  private setTasksState(tasks: Task[], callback?: () => void) {
+    this.setState(
+      {
+        tasks,
+        sideBarItems: getSideBarDays(tasks, moment(this.state.date))
+      },
+      callback
+    );
   }
 
   private sendMsgToMain<T>(
