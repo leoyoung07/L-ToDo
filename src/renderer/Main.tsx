@@ -28,12 +28,14 @@ function getDaysOfWeek(now: Moment) {
   return days;
 }
 
-function getSideBarDays(date: Moment = moment()) {
+function getSideBarDays(tasks: Task[], date: Moment = moment()): ISideBarItem[] {
   const days = getDaysOfWeek(date);
   return days.map(day => {
     return {
       text: day,
-      value: day
+      value: day,
+      // TODO calculate badge value
+      badgeValue: 0
     };
   });
 }
@@ -55,11 +57,12 @@ interface IMainState {
 class Main extends React.Component<IMainProps, IMainState> {
   constructor(props: IMainProps) {
     super(props);
+    const tasks: Task[] = [];
     this.state = {
       siderCollapsed: true,
-      sideBarItems: getSideBarDays(),
+      sideBarItems: getSideBarDays(tasks),
       drawerVisible: false,
-      tasks: [],
+      tasks: tasks,
       date: moment().format('YYYY-MM-DD'),
       isNewMode: true,
       draftTask: new Task()
@@ -195,7 +198,7 @@ class Main extends React.Component<IMainProps, IMainState> {
   private handleWeekChange(date: Moment, dateString: string) {
     this.setState({
       date: date.format('YYYY-MM-DD'),
-      sideBarItems: getSideBarDays(date)
+      sideBarItems: getSideBarDays(this.state.tasks, date)
     });
   }
 

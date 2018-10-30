@@ -7,6 +7,7 @@ const { Sider } = Layout;
 export interface ISideBarItem {
   text: string;
   value: string;
+  badgeValue: number;
 }
 
 interface ISideBarProps {
