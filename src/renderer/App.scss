@@ -114,3 +114,9 @@ body,
 .new-task-drawer__form {
   margin-bottom: 30px;
 }
+
+.ant-layout-sider .ant-menu-item,
+.ant-layout-sider .ant-badge {
+  display: flex;
+  align-items: center;
+}

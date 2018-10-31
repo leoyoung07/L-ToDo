@@ -46,7 +46,7 @@ class SideBar extends React.Component<ISideBarProps> {
           {this.props.items.map(item => (
             <Menu.Item key={item.value}>
               <span>{item.text}</span>
-              <Badge style={{margin: '0 8px'}} count={item.badgeValue} />
+              <Badge style={{margin: '0 10px', backgroundColor: '#40a9ff'}} count={item.badgeValue} />
             </Menu.Item>
           ))}
         </Menu>
